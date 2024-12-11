@@ -58,3 +58,142 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+
+/* Home Page Styling */
+
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #F4F7F6; /* Light neutral background for the page */
+    color: #333;
+    min-height: 100vh;
+    background-image: url('lib/images/HomePage.png'); /* Replace with your image path */
+    background-size: cover; /* Ensures the image covers the entire page */
+    background-position: center center; /* Centers the background image */
+    background-attachment: fixed; /* Keeps the background fixed while scrolling */
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: rgba(0, 0, 0, 0.4); /* Dark overlay for better visibility of content */
+    color: white;
+    padding: 3em 2em;
+    text-align: center;
+}
+
+    .hero-section .search-input {
+        width: 100%;
+        padding: 20px;
+    }
+
+.search-icon {
+    position: relative;
+    left: -43px;
+    top: -35px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+/* Categories Navigation */
+.nav-link {
+    cursor: pointer;
+    font-size: 1.1em;
+    color: #333;
+}
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+/* Hero Text Section */
+.hero {
+    text-align: center;
+    color: white;
+    padding: 4em 2em;
+}
+
+    .hero .hero-text h2 {
+        font-size: 2.5em;
+        margin-bottom: 1em;
+    }
+
+    .hero .hero-text p {
+        font-size: 1.3em;
+        margin-bottom: 1.5em;
+    }
+
+    .hero .btn {
+        background-color: #4CAF50;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 1.2em;
+        border-radius: 5px;
+    }
+
+        .hero .btn:hover {
+            background-color: #2C6E34;
+        }
+
+/* Garments Section */
+#garments {
+    padding: 3em 1em;
+    text-align: center;
+}
+
+    #garments h2 {
+        font-size: 2em;
+        margin-bottom: 1.5em;
+    }
+
+.garment-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+    .garment-links a {
+        font-size: 1.5em;
+        color: #2C6E34;
+        text-decoration: none;
+    }
+
+        .garment-links a:hover {
+            text-decoration: underline;
+        }
+
+/* Footer Styles */
+.footer {
+    background-color: #4CAF50;
+    color: white;
+    padding: 2em 1em;
+    text-align: left;
+    margin-top: 2em;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    flex: 1;
+    margin: 1em;
+}
+
+    .footer-section h3 {
+        font-size: 1.5em;
+        margin-bottom: 1em;
+    }
+
+    .footer-section p {
+        font-size: 1.1em
