@@ -1,0 +1,175 @@
+﻿@page "/products"
+@using System.Globalization
+@inject IProductRepository _productRepository
+@inject ICategoryRepository _categoryRepository
+
+
+<div class="products-page">
+    <h3 class="text-center my-4">Our Garments</h3>
+
+    @if (IsProcessing)
+    {
+        <div class="position-absolute w-100 vh-100 d-flex flex-column align-items-center bg-white justify-content-center">
+            <img src="/lib/images/loading.gif" alt="loading" />
+        </div>
+    }
+    else if (Product != null && Product.Any())
+    {
+        <div class="row mt-4 mx-1">
+            <!-- Categories and Search -->
+            <div class="col-12 d-flex justify-content-between align-items-center mb-3">
+                <!-- Categories -->
+                <ul class="nav nav-underline">
+                    <li class="nav-item">
+                        <span class="nav-link @GetActiveTabClass(0)" @onclick="() => FilterProducts(0)" style="cursor: pointer">All</span>
+                    </li>
+
+                    @foreach (var category in Categories)
+                    {
+                        <li class="nav-item">
+                            <span class="nav-link @GetActiveTabClass(category.Id)" @onclick="() => FilterProducts(category.Id)" style="cursor: pointer">
+                                @category.Name
+                            </span>
+                        </li>
+                    }
+                </ul>
+
+                <!-- Search Box -->
+                <div style="max-width: 300px;" class="d-flex align-items-center">
+                    <input type="text" class="form-control rounded-pill me-2" 
+                    placeholder="Search products..." 
+                    @oninput="e => FilterProductByName(e.Value.ToString())" />
+                    <i class="bi bi-search text-secondary"></i>
+                </div>
+            </div>
+
+
+            @foreach (var prod in FilteredProducts)
+            {
+                <div class="col-12 col-md-6 col-lg-6 mb-4">
+
+                    <div class="card h-100 d-flex flex-column">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+
+                            @if (!string.IsNullOrEmpty(prod.SpecialTag))
+                            {
+                                <i class="bi bi-star btn btn-outline-success disabled"> @prod.SpecialTag</i>
+                            }
+
+                            <div class="col-6 text-end text-danger px-3 h3">
+                                @prod.Price.ToString("C", CultureInfo.GetCultureInfo("en-GB"))
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            @if (!string.IsNullOrEmpty(prod.ImageUrl))
+                            {
+                                <img class="card-img-top img-thumbnail img-rounded w-50 mt-2" src="@prod.ImageUrl" style="">
+                            }
+                            else
+                            {
+                                <img class="card-img-top img-thumbnail img-rounded w-50 mt-2" src="images/default.png" style="">
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-center lead text-success">@prod.Name</h5>
+                            <div class="text-center my-2">
+                                <label for="sizeDropdown-@prod.Id" class="form-label">Available Sizes:</label>
+                                <select id="sizeDropdown-@prod.Id" class="form-select w-75">
+                                    @foreach (var size in prod.Size.Split(','))
+                                    {
+                                        <option value="@size">@size</option>
+                                    }
+                                </select>
+
+                            </div>
+                            <p class="card-text mt-2">@((MarkupString)prod.Description)</p>
+                            <h4 class="text-center mt-3">
+                                <button class="btn btn-success text-right px-5" @onclick="() => AddToCart(prod.Id)">
+                                    <i class="bi bi-cart3"></i> Add to cart
+                                </button>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center text-muted">No products available at the moment.</div>
+    }
+</div>
+
+@code {
+    private IEnumerable<Product> Product = new List<Product>();
+    private IEnumerable<Category> Categories = new List<Category>();
+    private IEnumerable<Product> FilteredProducts = new List<Product>();
+    private bool IsProcessing { get; set; } = true;
+    private int _selectedCategoryId = 0;
+    private string _searchText = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsProcessing = true;
+        try
+        {
+            Product = await _productRepository.GetAllAsync();
+            Categories = await _categoryRepository.GetAllAsync();
+            FilterProducts(0);
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
+    }
+
+    private void FilterProducts(int categoryId)
+    {
+        _selectedCategoryId = categoryId; // Update the selected category ID
+        if (categoryId==0)
+        {
+            // Show all products
+            FilteredProducts = string.IsNullOrWhiteSpace(_searchText)
+                ? Product
+                : Product.Where(u => u.Name.Contains(_searchText, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        }
+        else
+        {
+            // Filter by category
+            FilteredProducts = Product
+                .Where(u => u.CategoryId == categoryId &&
+                            (string.IsNullOrWhiteSpace(_searchText) || u.Name.Contains(_searchText, StringComparison.InvariantCultureIgnoreCase)))
+                .ToList();
+        }
+    }
+
+    private void FilterProductByName(string newValueOfSearchText)
+    {
+        _searchText = newValueOfSearchText; // Update search text
+
+        if (string.IsNullOrWhiteSpace(newValueOfSearchText))
+        {
+            // If search text is empty, filter by category only
+            FilterProducts(_selectedCategoryId);
+        }
+        else
+        {
+            // Filter by both category and search text
+            FilteredProducts = Product
+                .Where(u => (u.CategoryId == _selectedCategoryId || _selectedCategoryId == 0) &&
+                            u.Name.Contains(newValueOfSearchText, StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
+        }
+    }
+
+    private string GetActiveTabClass(int categoryId)
+    {
+        return categoryId == _selectedCategoryId ? "active" : string.Empty;
+    }
+
+    private void AddToCart(int productId)
+    {
+        // Implement logic to add the product to the cart
+        Console.WriteLine($"Product {productId} added to cart.");
+    }
+}

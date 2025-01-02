@@ -1,33 +1,76 @@
 ﻿@page "/"
+@inject IProductRepository _productRepository
 
-<PageTitle>Home</PageTitle>
+<div class="home-page">
+    <PageTitle>Home</PageTitle>
 
+    @if (IsProcessing)
+    {
+        <div class="position-absolute w-100 vh-100 d-flex flex-column align-items-center bg-white justify-content-center">
+            <img src="/lib/images/loading.gif" alt="loading" />
+        </div>
+    }
+    else
+    {
+        <div class="container-fluid px-0 m-0 full-width">
+            <!-- Hero Section -->
+            <div class="hero-section d-flex align-items-center justify-content-center" style="height: 30vh; background-image: url('lib/images/GreenHands.png'); background-size: cover; background-position: center;">
+                <div class="text-center">
+                    <h1>Welcome to EcoFashion</h1>
+                    <p>Style with sustainability in mind.</p>
+                    <a href="/products" class="btn btn-primary">Explore Garments</a>
+                </div>
+            </div>
 
-<div class="container-fluid px-0 m-0 full-width">
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="m-auto d-flex align-items-center" style="width: 100%; height: 50vh;">
-            <div class="d-flex align-items-center" style="width: 100%;">
-                <input type="text" class="form-control search-input rounded-pill"
-                       placeholder="Find your perfect style!" />
-                <span class="search-icon">
-                    <i class="bi bi-search"></i>
-                </span>
+            <!-- Environmental Impact Message -->
+            <div class="environmental-message text-center my-5">
+                <h2>The Hidden Cost of Returns</h2>
+                <p>
+                    Every return adds to transportation emissions, waste, and energy use. Choose wisely to reduce environmental impact—shop sustainably and buy the right product the first time.
+                </p>
+            </div>
+
+            <!-- Featured Products Section -->
+            <div class="content px-4 m-2">
+                <div class="featured-products">
+                    <h2 class="text-center">Featured Products</h2>
+                    <div class="row">
+                        @foreach (var product in Products.Take(4))
+                        {
+                            <div class="col-md-3 mb-4">
+                                <div class="card">
+                                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" />
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">@product.Name</h5>
+                                        <p class="card-text">$@product.Price</p>
+                                        <a href="/products/@product.Id" class="btn btn-outline-success">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Categories Navigation -->
-    <div class="content px-4 m-2">
-
-        <!-- Hero Text -->
-        <div class="hero">
-            <div class="hero-text">
-                <h2>Wear Green, Live Green</h2>
-                <p>Discover our eco-friendly fashion line, made with love for the planet.</p>
-                <a href="#garments" class="btn">Explore Garments</a>
-            </div>
-        </div>
-    </div>
+    }
 </div>
 
+@code {
+    private IEnumerable<Product> Products = new List<Product>();
+    private bool IsProcessing { get; set; } = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadProducts();
+            IsProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadProducts()
+    {
+        Products = await _productRepository.GetAllAsync();
+    }
+}

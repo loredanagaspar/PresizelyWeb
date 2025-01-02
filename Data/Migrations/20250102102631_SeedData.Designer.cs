@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PresizelyWeb.Data;
 
@@ -11,9 +12,11 @@ using PresizelyWeb.Data;
 namespace PresizelyWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250102102631_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -338,7 +341,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Cotton",
                             Name = "Plain White T-Shirt",
                             Price = 12.99m,
-                            Size = "S,M,L,XL",
+                            Size = "M",
                             SpecialTag = "Casual Wear",
                             Stock = 50
                         },
@@ -352,7 +355,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Cotton",
                             Name = "Graphic T-Shirt",
                             Price = 15.99m,
-                            Size = "S,M,L,XL",
+                            Size = "L",
                             SpecialTag = "Trendy",
                             Stock = 40
                         },
@@ -366,7 +369,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Polyester",
                             Name = "Formal Shirt",
                             Price = 29.99m,
-                            Size = "S,M,L,XL",
+                            Size = "L",
                             SpecialTag = "Formal",
                             Stock = 30
                         },
@@ -380,7 +383,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Cotton",
                             Name = "Casual Check Shirt",
                             Price = 25.99m,
-                            Size = "S,M,L,XL",
+                            Size = "M",
                             SpecialTag = "Casual",
                             Stock = 35
                         },
@@ -394,7 +397,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Denim",
                             Name = "Blue Denim Jeans",
                             Price = 39.99m,
-                            Size = "32,34,36,38",
+                            Size = "32",
                             SpecialTag = "Everyday Wear",
                             Stock = 60
                         },
@@ -408,7 +411,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Denim",
                             Name = "Black Skinny Jeans",
                             Price = 42.99m,
-                            Size = "32,34,36,38",
+                            Size = "30",
                             SpecialTag = "Trendy",
                             Stock = 45
                         },
@@ -422,7 +425,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Cotton",
                             Name = "Chino Trousers",
                             Price = 34.99m,
-                            Size = "32,34,36,38",
+                            Size = "34",
                             SpecialTag = "Smart Casual",
                             Stock = 25
                         },
@@ -436,7 +439,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Polyester",
                             Name = "Formal Trousers",
                             Price = 49.99m,
-                            Size = "32,34,36,38",
+                            Size = "36",
                             SpecialTag = "Formal",
                             Stock = 20
                         },
@@ -450,7 +453,7 @@ namespace PresizelyWeb.Migrations
                             Material = "Leather",
                             Name = "Leather Jacket",
                             Price = 99.99m,
-                            Size = "S,M",
+                            Size = "M",
                             SpecialTag = "Premium",
                             Stock = 15
                         });
