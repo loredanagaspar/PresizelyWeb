@@ -2,6 +2,10 @@
 @using System.Globalization
 @inject IProductRepository _productRepository
 @inject ICategoryRepository _categoryRepository
+@inject AuthenticationStateProvider _AuthenticationStateProvider
+@inject IJSRuntime _JS
+@inject NavigationManager _NavigationManager
+@inject IShoppingCartRepository _cartRepository
 
 
 <div class="products-page">
@@ -74,7 +78,8 @@
                             <h5 class="card-title text-center lead text-success">@prod.Name</h5>
                             <div class="text-center my-2">
                                 <label for="sizeDropdown-@prod.Id" class="form-label">Available Sizes:</label>
-                                <select id="sizeDropdown-@prod.Id" class="form-select w-75">
+                                <select id="sizeDropdown-@prod.Id" class="form-select w-75" @bind="selectedSize">
+                                    <option value="" disabled selected>Select a size</option> <!-- Placeholder option -->
                                     @foreach (var size in prod.Size.Split(','))
                                     {
                                         <option value="@size">@size</option>
@@ -84,10 +89,13 @@
                             </div>
                             <p class="card-text mt-2">@((MarkupString)prod.Description)</p>
                             <h4 class="text-center mt-3">
-                                <button class="btn btn-success text-right px-5" @onclick="() => AddToCart(prod.Id)">
+                                <button class="btn btn-success text-right px-5" @onclick="()=>AddOrderItem(prod, selectedSize)">
                                     <i class="bi bi-cart3"></i> Add to cart
                                 </button>
                             </h4>
+
+
+
                         </div>
                     </div>
                 </div>
@@ -107,6 +115,7 @@
     private bool IsProcessing { get; set; } = true;
     private int _selectedCategoryId = 0;
     private string _searchText = "";
+    private string selectedSize;
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,9 +176,44 @@
         return categoryId == _selectedCategoryId ? "active" : string.Empty;
     }
 
-    private void AddToCart(int productId)
+    private async Task AddOrderItem(Product product, string selectedSize)
     {
-        // Implement logic to add the product to the cart
-        Console.WriteLine($"Product {productId} added to cart.");
+
+
+        if (string.IsNullOrEmpty(selectedSize))
+        {
+            _JS?.ToastrError("Please select a size before adding to the cart.");
+            return;
+        }
+        var authState = await _AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
+
+        if (!authenticated)
+        {
+            Console.WriteLine("Redirecting to: /Account/Login");
+            _NavigationManager.NavigateTo("/Account/Login");
+            return;
+        }
+
+        var userId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            _JS?.ToastrError("Unable to identify user.");
+            return;
+        }
+
+        var result = await _cartRepository.UpdateCartAsync(userId, product.Id, 1, selectedSize);
+
+        if (result)
+        {
+            _JS?.ToastrSuccess("Product Added to Cart Successfully");
+        }
+        else
+        {
+            _JS?.ToastrError("Error encountered.");
+        }
     }
+
+ 
 }
