@@ -5,9 +5,11 @@
 @inject IShoppingCartRepository _cartRepository
 @inject IProductRepository _productRepository
 @inject ICategoryRepository _categoryRepository
+@inject IOrderRepository _orderRepository
 @inject IJSRuntime _JS
 @inject NavigationManager _NavigationManager
 @attribute [Authorize]
+
 
 
 @if (IsProcessing)
@@ -74,10 +76,11 @@ else
                     <div class="card-header text-success text-center display-6">
                         Delivery Details
                     </div>
-                    <EditForm Model="OrderHeader" FormName="CartForm" OnValidSubmit="ProcessOrderCreation">
+                    <EditForm Model="OrderHeader" FormName="CartForm" OnValidSubmit="ProcessOrderCreation" OnInvalidSubmit="HandleInvalidSubmit">
                         <div class="card-body">
-                            <DataAnnotationsValidator />
-                            <ValidationSummary />
+                          
+                         <DataAnnotationsValidator/>
+                       <ValidationSummary /> 
 
                             <div class="card-body">
                                 <div class="form-group">
@@ -94,7 +97,13 @@ else
 
                                 <div class="form-group">
                                     <label for="phoneNumber">Phone</label>
-                                    <InputText @bind-Value="OrderHeader.PhoneNumber" type="tel" id="phoneNumber" class="form-control" placeholder="Enter your phone number" required />
+                                    <InputText @bind-Value="OrderHeader.PhoneNumber"
+                                               type="tel"
+                                               id="phoneNumber"
+                                               class="form-control"
+                                               placeholder="Enter your phone number"
+                                               pattern="^0[1-9]\d{9}$"
+                                               required />
                                     <ValidationMessage For="() => OrderHeader.PhoneNumber" />
                                 </div>
 
@@ -164,6 +173,7 @@ else
         var user = authState.User;
         OrderHeader.Email = user.FindFirst(u => u.Type.Contains("email"))?.Value;
         OrderHeader.UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        OrderHeader.Status = SD.StatusPending;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -178,7 +188,7 @@ else
 
     private async Task LoadCart()
     {
-      
+
         ShoppingCarts = await _cartRepository.GetAllAsync(OrderHeader.UserId);
         OrderHeader.OrderTotal = 0;
         TotalItems = 0;
@@ -236,8 +246,61 @@ else
 
     private async Task ProcessOrderCreation()
     {
+        Console.WriteLine("Place Order clicked");
+        try
+        {
+            IsProcessing = true;
+            await Task.Yield();
 
+
+            // Check if the shopping cart is empty
+            if (!ShoppingCarts.Any())
+            {
+                _JS?.ToastrError("Your cart is empty. Please add items to proceed.");
+                IsProcessing = false;
+                return;
+            }
+
+            // Populate OrderHeader fields
+            OrderHeader.OrderDate = DateTime.Now;
+            OrderHeader.OrderDetails = SD.ConvertShoppingCartListOrderDetail(ShoppingCarts.ToList());
+
+            // Save the order
+            var createdOrder = await _orderRepository.CreateAsync(OrderHeader);
+
+            if (createdOrder != null && createdOrder.Id > 0)
+            {
+                Console.WriteLine($"Order created successfully with ID: {createdOrder.Id}");
+                _JS?.ToastrSuccess("Order placed successfully!");
+
+                // Navigate to the order confirmation page
+                _NavigationManager.NavigateTo($"/order/confirmation/{createdOrder.Id}");
+            }
+            else
+            {
+                Console.WriteLine("Order creation failed.");
+                _JS?.ToastrError("Failed to place the order. Please try again.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in order creation: {ex.Message}");
+            _JS?.ToastrError("An unexpected error occurred. Please try again.");
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
     }
+    private void HandleInvalidSubmit(EditContext editContext)
+    {
+        Console.WriteLine("Validation failed. Listing errors:");
+        foreach (var error in editContext.GetValidationMessages())
+        {
+            Console.WriteLine(error);
+        }
+    }
+
 }
 
 }

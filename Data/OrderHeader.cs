@@ -14,7 +14,6 @@ namespace PresizelyWeb.Data
         [Display(Name = "Order Total")]
         public double OrderTotal { get; set; }
 
-        [Required(ErrorMessage = "Order date is required.")]
         public DateTime OrderDate { get; set; }
 
         [Required(ErrorMessage = "Status is required.")]
@@ -25,7 +24,7 @@ namespace PresizelyWeb.Data
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Phone number is required.")]
-        [Phone(ErrorMessage = "Invalid phone number format.")]
+        [RegularExpression(@"^0[1-9]\d{9}$", ErrorMessage = "Enter a valid UK phone number (e.g., 07466480661).")]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
 
@@ -39,7 +38,7 @@ namespace PresizelyWeb.Data
         public string Address { get; set; }
 
         [Required(ErrorMessage = "Postal code is required.")]
-        [RegularExpression(@"^\d{4,6}$", ErrorMessage = "Invalid postal code format.")]
+        [RegularExpression(@"^([A-Z]{1,2}\d{1,2}[A-Z]?)\s?(\d[A-Z]{2})$", ErrorMessage = "Invalid UK postal code format.")]
         [Display(Name = "Postal Code")]
         public string PostalCode { get; set; }
 
