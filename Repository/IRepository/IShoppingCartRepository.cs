@@ -9,5 +9,7 @@ namespace PresizelyWeb.Repository.IRepository
         public Task<bool> ClearCartAsync(string? userId);
         public Task<bool> RemoveCartItemAsync(string userId, int productId, string size);
 
+        public Task <int> GetTotalCartCountAsync(string? userId);
+
     }
 }

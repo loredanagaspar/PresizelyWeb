@@ -1,11 +1,13 @@
 ﻿@page "/products"
 @using System.Globalization
+@using PresizelyWeb.Services
 @inject IProductRepository _productRepository
 @inject ICategoryRepository _categoryRepository
 @inject AuthenticationStateProvider _AuthenticationStateProvider
 @inject IJSRuntime _JS
 @inject NavigationManager _NavigationManager
 @inject IShoppingCartRepository _cartRepository
+@inject SharedStateService _sharedStateService
 
 
 <div class="products-page">
@@ -204,7 +206,7 @@
         }
 
         var result = await _cartRepository.UpdateCartAsync(userId, product.Id, 1, selectedSize);
-
+        _sharedStateService.TotalCartCount = await _cartRepository.GetTotalCartCountAsync(userId);
         if (result)
         {
             _JS?.ToastrSuccess("Product Added to Cart Successfully");

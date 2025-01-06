@@ -7,6 +7,8 @@ using PresizelyWeb.Data;
 using PresizelyWeb.Repository;
 using PresizelyWeb.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
+using Radzen;
+using PresizelyWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +24,8 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-
+builder.Services.AddRadzenComponents();
+builder.Services.AddSingleton<SharedStateService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ApplicationScheme;

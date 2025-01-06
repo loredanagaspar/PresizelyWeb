@@ -1,6 +1,7 @@
 ﻿@page "/cart"
 @using Microsoft.AspNetCore.Authorization
 @using System.Globalization
+@using PresizelyWeb.Services
 @inject AuthenticationStateProvider _AuthenticationStateProvider
 @inject IShoppingCartRepository _cartRepository
 @inject IProductRepository _productRepository
@@ -8,6 +9,7 @@
 @inject IOrderRepository _orderRepository
 @inject IJSRuntime _JS
 @inject NavigationManager _NavigationManager
+@inject SharedStateService _sharedstateService
 @attribute [Authorize]
 
 
@@ -78,9 +80,9 @@ else
                     </div>
                     <EditForm Model="OrderHeader" FormName="CartForm" OnValidSubmit="ProcessOrderCreation" OnInvalidSubmit="HandleInvalidSubmit">
                         <div class="card-body">
-                          
-                         <DataAnnotationsValidator/>
-                       <ValidationSummary /> 
+
+                            <DataAnnotationsValidator/>
+                            <ValidationSummary /> 
 
                             <div class="card-body">
                                 <div class="form-group">
@@ -98,12 +100,12 @@ else
                                 <div class="form-group">
                                     <label for="phoneNumber">Phone</label>
                                     <InputText @bind-Value="OrderHeader.PhoneNumber"
-                                               type="tel"
-                                               id="phoneNumber"
-                                               class="form-control"
-                                               placeholder="Enter your phone number"
-                                               pattern="^0[1-9]\d{9}$"
-                                               required />
+                                    type="tel"
+                                    id="phoneNumber"
+                                    class="form-control"
+                                    placeholder="Enter your phone number"
+                                    pattern="^0[1-9]\d{9}$"
+                                    required />
                                     <ValidationMessage For="() => OrderHeader.PhoneNumber" />
                                 </div>
 
@@ -206,6 +208,7 @@ else
 
 
         var result = await _cartRepository.UpdateCartAsync(OrderHeader.UserId, productId, updateBy, selectedSize);
+        _sharedstateService.TotalCartCount = await _cartRepository.GetTotalCartCountAsync(OrderHeader.UserId);
         if (result)
         {
             _JS?.ToastrSuccess(updateBy > 0 ? "Item quantity increased." : "Item quantity decreased.");

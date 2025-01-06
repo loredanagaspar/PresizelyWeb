@@ -2,15 +2,19 @@
 
 @inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark">
+<div class="top-row navbar-dark pb-3 pt-3">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">PresizelyWeb</a>
+        <div class="d-flex justify-content-center w-100">
+            <a class="navbar-brand" href="">
+                <img src="/lib/images/PreZISEly Logo.png" alt="Logo" class="img-fluid" style="max-height: 80px;">
+            </a>
+        </div>
     </div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<div class="nav-scrollable"  onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link p-2 " href="" Match="NavLinkMatch.All">
@@ -27,8 +31,17 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Product
             </NavLink>
         </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link p-2" href="/cart">
+                <span class="bi bi-cart3"></span> Cart
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link p-2" href="/order/list">
+                <span class="bi bi-card-list"></span> Order List
+            </NavLink>
+        </div>
 
-    
 
         <div class="nav-item px-3">
             <NavLink class="nav-link p-2" href="auth">

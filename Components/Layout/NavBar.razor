@@ -1,22 +1,32 @@
-﻿<nav class="navbar navbar-expand-md navbar-dark bg-success-subtle pb-4 pt-4">
+﻿@using PresizelyWeb.Services
+@inject AuthenticationStateProvider _authStateProvider
+@inject SharedStateService _sharedstateService
+@inject IShoppingCartRepository _cartRepository
+
+<nav class="navbar navbar-expand-md navbar-dark bg-success-subtle pb-4 pt-4">
 	<div class="container-fluid">
 		<a class="navbar-brand text-muted" href="">
 			<img src="/lib/images/PreZISEly Logo.png" alt="Logo" style="height: 100%; max-height: 50px;">
 		</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-				aria-controls="navbarCollapse" aria-label="Toggle navigation">
+		aria-controls="navbarCollapse" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarCollapse">
 			<ul class="navbar-nav me-auto mb-2 mb-md-0">
 				<li class="nav-item mx-2">
-					<NavLink class="nav-link text-muted" href="">
+					<NavLink class="nav-link text-muted" href="/" Match="NavLinkMatch.All">
 						<span class="bi bi-house-door" aria-hidden="true"></span> Home
 					</NavLink>
 				</li>
 				<li class="nav-item mx-2">
 					<NavLink class="nav-link text-muted" href="/cart">
-						<span class="bi bi-cart3" aria-hidden="true"></span> Cart
+						<span class="bi bi-cart3" aria-hidden="true"></span> Cart (@_sharedstateService.TotalCartCount)
+					</NavLink>
+				</li>
+				<li class="nav-item mx-2">
+					<NavLink class="nav-link text-muted" href="/order/list">
+						<span class="bi bi-card-list" aria-hidden="true"></span> Order List
 					</NavLink>
 				</li>
 			</ul>
@@ -24,35 +34,60 @@
 				<AuthorizeView>
 					<Authorized>
 
-				<li class="nav-item">
-					<button class="nav-link active me-2 text-muted" style="cursor: pointer; background: transparent; border: 0px;">
-						Welcome, @context?.User?.Identity?.Name
-					</button>
-				</li>
-				<li class="nav-item">
-					<form action="Account/Logout" method="post">
-						<AntiforgeryToken />
-						<input type="hidden" name="ReturnUrl" value="" />
-						<button type="submit" class="nav-link btn btn-success text-muted">
-							<span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
-						</button>
-					</form>
-				</li>
+						<li class="nav-item">
+							<button class="nav-link active me-2 text-muted" style="cursor: pointer; background: transparent; border: 0px;">
+								Welcome, @context?.User?.Identity?.Name
+							</button>
+						</li>
+						<li class="nav-item">
+							<form action="Account/Logout" method="post">
+								<AntiforgeryToken />
+								<input type="hidden" name="ReturnUrl" value="" />
+								<button type="submit" class="nav-link btn btn-success text-muted">
+									<span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+								</button>
+							</form>
+						</li>
 					</Authorized>
 					<NotAuthorized>
-				<li class="nav-item">
-					<NavLink class="nav-link text-muted" href="Account/Register">
-						<span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
-					</NavLink>
-				</li>
-				<li class="nav-item">
-					<NavLink class="nav-link btn btn-outline-success text-muted" href="Account/Login">
-						<span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
-					</NavLink>
-				</li>
+						<li class="nav-item">
+							<NavLink class="nav-link text-muted" href="Account/Register">
+								<span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+							</NavLink>
+						</li>
+						<li class="nav-item">
+							<NavLink class="nav-link btn btn-outline-success text-muted" href="Account/Login">
+								<span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+							</NavLink>
+						</li>
 					</NotAuthorized>
 				</AuthorizeView>
-				</ul>
+			</ul>
 		</div>
 	</div>
 </nav>
+@code{
+	protected override void OnInitialized()
+	{
+		_sharedstateService.OnChange += OnSharedStateChange;
+		GetInitalCount();
+	}
+
+	private void OnSharedStateChange()
+	{
+		InvokeAsync(StateHasChanged);
+	}
+
+	public async Task GetInitalCount()
+	{
+		var authState = await _authStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
+
+		_sharedstateService.TotalCartCount = await _cartRepository.GetTotalCartCountAsync(user?.FindFirst(u=>u.Type.Contains("nameidentifier"))?.Value);
+	}
+
+	public void Dispose()
+	{
+		_sharedstateService.OnChange -= OnSharedStateChange;
+	}
+}
