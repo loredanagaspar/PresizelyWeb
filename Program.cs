@@ -9,6 +9,7 @@ using PresizelyWeb.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Radzen;
 using PresizelyWeb.Services;
+using Microsoft.AspNetCore.Authentication.Facebook;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,10 +29,24 @@ builder.Services.AddRadzenComponents();
 builder.Services.AddSingleton<SharedStateService>();
 builder.Services.AddAuthentication(options =>
 {
+    // Set the default schemes for authentication
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 })
-    .AddIdentityCookies();
+.AddFacebook(options =>
+{
+    options.AppId = "980871697221199"; 
+    options.AppSecret = "6bb4c9d452fb5d47032c3841c6945650"; 
+    options.CallbackPath = new PathString("/signin-facebook");
+})
+.AddGoogle(options =>
+{
+    options.ClientId = "206236374741-ejv2pdemm8sahc7rdgs7damg7fbl55lv.apps.googleusercontent.com";
+    options.ClientSecret = "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";
+}
+    )
+.AddIdentityCookies(); // Add cookies for Identity authentication
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -72,7 +87,7 @@ app.UseHttpsRedirection();
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     Secure = CookieSecurePolicy.Always, // Always send cookies over HTTPS
-    MinimumSameSitePolicy = SameSiteMode.Strict
+    MinimumSameSitePolicy = SameSiteMode.Lax
 });
 
 app.MapStaticAssets();

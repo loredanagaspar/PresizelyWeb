@@ -33,46 +33,47 @@ a, .btn-link {
     margin-top: 0; /* Center the logo horizontally */
     max-width: 100%; /* Adjust the logo width to fit within the nav menu */
     height: auto; /* Maintain aspect ratio */
-
 }
-    .nav-scrollable .nav-link {
-        color: white; /* Default text color */
-    }
 
-        .nav-scrollable .nav-link:hover {
-            color: #ddd; /* Softer hover color */
-        }
+.nav-scrollable .nav-link {
+    color: white; /* Default text color */
+}
+
+    .nav-scrollable .nav-link:hover {
+        color: #ddd; /* Softer hover color */
+    }
 
 /* Ensure text and icons are visible on olivegreen */
 .nav-link, .navbar-brand {
     color: white; /* Text color for readability */
 }
-
-    .nav-link:hover, .navbar-brand:hover {
+ .nav-link:hover, .navbar-brand:hover {
         color: #ddd; /* Hover text color for better UX */
-    }
+ }
 
 .nav-link.active {
-    font-weight: bold;
-    color: #0056b3; /* Highlight color */
-    text-decoration: underline;
-}
+        font-weight: bold;
+        color: #0056b3; /* Highlight color */
+        text-decoration: underline;
+    }
 
-/* Align icons with text in nav links */
-.nav-link .bi {
-    font-size: 1.2rem; /* Adjust icon size */
-    vertical-align: middle; /* Align vertically with text */
-    margin-right: 8px; /* Add spacing between icon and text */
-}
+    /* Align icons with text in nav links */
+    .nav-link .bi {
+        font-size: 1.2rem; /* Adjust icon size */
+        vertical-align: middle; /* Align vertically with text */
+        margin-right: 8px; /* Add spacing between icon and text */
+    }
 
 /* Ensure text in nav links is aligned */
 .nav-link {
     display: flex;
     align-items: center;
-    gap:8px;
+    gap: 8px;
     padding: 0.5rem; /* Adjust padding */
     text-align: left; /* Align text */
     white-space: nowrap; /* Prevent text wrapping */
+    color: #333;
+    text-decoration: none;
 }
 
 /* Prevent flex issues in smaller viewports */
@@ -80,6 +81,7 @@ a, .btn-link {
     display: flex;
     align-items: center;
 }
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
