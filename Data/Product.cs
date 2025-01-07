@@ -16,8 +16,11 @@ namespace PresizelyWeb.Data
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "Size is required.")]
-        public string Size { get; set; } 
-      
+        public string Size { get; set; } // Comma-separated sizes for quick display
+
+        public string SizeChartJson { get; set; } // JSON string for detailed size chart
+
+        public bool IsTop { get; set; } // True if the product is a top, false if a bottom
         public string Color { get; set; }// Nullable to allow optional input
 
         [Range(0, int.MaxValue, ErrorMessage = "Stock must be 0 or greater.")]

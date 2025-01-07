@@ -76,29 +76,32 @@
                                 <img class="card-img-top img-thumbnail img-rounded w-50 mt-2" src="images/default.png" style="">
                             }
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title text-center lead text-success">@prod.Name</h5>
-                            <div class="text-center my-2">
-                                <label for="sizeDropdown-@prod.Id" class="form-label">Available Sizes:</label>
-                                <select id="sizeDropdown-@prod.Id" class="form-select w-75" @bind="selectedSize">
-                                    <option value="" disabled selected>Select a size</option> <!-- Placeholder option -->
-                                    @foreach (var size in prod.Size.Split(','))
-                                    {
-                                        <option value="@size">@size</option>
-                                    }
-                                </select>
+                        <!-- Description -->
+                        <p class="card-text mt-2">@((MarkupString)prod.Description)</p>
 
-                            </div>
-                            <p class="card-text mt-2">@((MarkupString)prod.Description)</p>
-                            <h4 class="text-center mt-3">
-                                <button class="btn btn-success text-right px-5" @onclick="()=>AddOrderItem(prod, selectedSize)">
-                                    <i class="bi bi-cart3"></i> Add to cart
-                                </button>
-                            </h4>
-
-
-
+                        <!-- Dropdown and Size Calculator Aligned -->
+                        <div class="d-flex justify-content-start align-items-center gap-3">
+                            <label for="sizeDropdown-@prod.Id" class="form-label mb-0">Available Sizes:</label>
+                            <select id="sizeDropdown-@prod.Id" class="form-select w-auto" @bind="selectedSize">
+                                <option value="" disabled selected>Select a size</option> <!-- Placeholder option -->
+                                @foreach (var size in prod.Size.Split(','))
+                                {
+                                    <option value="@size">@size</option>
+                                }
+                            </select>
+                            <a class="btn btn-info px-3" href="/size-calculator/@prod.Id">
+                                <i class="bi bi-calculator"></i> Size Calculator
+                            </a>
                         </div>
+
+                        
+
+                        <!-- Add to Cart Button -->
+                        <h4 class="text-center mt-3">
+                            <button class="btn btn-success text-right px-5" @onclick="()=>AddOrderItem(prod, selectedSize)">
+                                <i class="bi bi-cart3"></i> Add to cart
+                            </button>
+                        </h4>
                     </div>
                 </div>
             }

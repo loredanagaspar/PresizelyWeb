@@ -78,7 +78,7 @@ a, .btn-link {
 
 /* Prevent flex issues in smaller viewports */
 .nav-item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
 }
 
@@ -224,4 +224,29 @@ a, .btn-link {
     background-position: center center;
     background-attachment: fixed;
     min-height: 100vh;
+}
+
+/* SizeCalculator */
+.size-calculator-container {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.form-control {
+    border-radius: 10px;
+}
+
+button {
+    border-radius: 10px;
 }

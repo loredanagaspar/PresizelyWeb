@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PresizelyWeb.Data;
 
@@ -11,9 +12,11 @@ using PresizelyWeb.Data;
 namespace PresizelyWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250107081928_AddSizeChartAndSizeCalculatorToDb")]
+    partial class AddSizeChartAndSizeCalculatorToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -604,6 +607,36 @@ namespace PresizelyWeb.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ShoppingCart");
+                });
+
+            modelBuilder.Entity("PresizelyWeb.Data.SizeCalculator", b =>
+                {
+                    b.Property<int?>("Bust")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Hips")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Inseam")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecommendedSize")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SleeveLength")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Waist")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Weight")
+                        .HasColumnType("int");
+
+                    b.ToTable("SizeCalculator");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -8,16 +8,17 @@ namespace PresizelyWeb.Data
 
         public DbSet<Category> Category { get; set; }
         public DbSet<Product> Product { get; set; }
-        public DbSet <ShoppingCart> ShoppingCart{ get; set; }
-        public DbSet<OrderHeader> OrderHeader{ get; set; }
+        public DbSet<ShoppingCart> ShoppingCart { get; set; }
+        public DbSet<OrderHeader> OrderHeader { get; set; }
         public DbSet<OrderDetail> OrderDetail { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-
+            
             //Seed Categories
             builder.Entity<Category>().HasData(
             new Category { Id = 1, Name = "T-Shirts" },
@@ -40,6 +41,13 @@ namespace PresizelyWeb.Data
                    Name = "Plain White T-Shirt",
                    Price = 12.99M,
                    Size = "S,M,L,XL",
+                   SizeChartJson = @"{
+                'S': { 'BustMin': 80, 'BustMax': 90, 'WaistMin': 60, 'WaistMax': 70, 'SleeveMin': 50, 'SleeveMax': 55 },
+                'M': { 'BustMin': 90, 'BustMax': 100, 'WaistMin': 70, 'WaistMax': 80, 'SleeveMin': 55, 'SleeveMax': 60 },
+                'L': { 'BustMin': 100, 'BustMax': 110, 'WaistMin': 80, 'WaistMax': 90, 'SleeveMin': 60, 'SleeveMax': 65 },
+                'XL': { 'BustMin': 110, 'BustMax': 120, 'WaistMin': 90, 'WaistMax': 100, 'SleeveMin': 65, 'SleeveMax': 70 }
+            }".Replace("'", "\""),
+                   IsTop = true,
                    Color = "White",
                    Material = "Cotton",
                    Stock = 50,
@@ -54,6 +62,13 @@ namespace PresizelyWeb.Data
                    Name = "Graphic T-Shirt",
                    Price = 15.99M,
                    Size = "S,M,L,XL",
+                   SizeChartJson = @"{
+                'S': { 'BustMin': 80, 'BustMax': 90, 'WaistMin': 60, 'WaistMax': 70, 'SleeveMin': 50, 'SleeveMax': 55 },
+                'M': { 'BustMin': 90, 'BustMax': 100, 'WaistMin': 70, 'WaistMax': 80, 'SleeveMin': 55, 'SleeveMax': 60 },
+                'L': { 'BustMin': 100, 'BustMax': 110, 'WaistMin': 80, 'WaistMax': 90, 'SleeveMin': 60, 'SleeveMax': 65 },
+                'XL': { 'BustMin': 110, 'BustMax': 120, 'WaistMin': 90, 'WaistMax': 100, 'SleeveMin': 65, 'SleeveMax': 70 }
+            }".Replace("'", "\""),
+                   IsTop = true,
                    Color = "Black",
                    Material = "Cotton",
                    Stock = 40,
@@ -69,6 +84,13 @@ namespace PresizelyWeb.Data
                    Name = "Formal Shirt",
                    Price = 29.99M,
                    Size = "S,M,L,XL",
+                   SizeChartJson = @"{
+                'S': { 'BustMin': 85, 'BustMax': 95, 'WaistMin': 65, 'WaistMax': 75, 'SleeveMin': 52, 'SleeveMax': 57 },
+                'M': { 'BustMin': 95, 'BustMax': 105, 'WaistMin': 75, 'WaistMax': 85, 'SleeveMin': 57, 'SleeveMax': 62 },
+                'L': { 'BustMin': 105, 'BustMax': 115, 'WaistMin': 85, 'WaistMax': 95, 'SleeveMin': 62, 'SleeveMax': 67 },
+                'XL': { 'BustMin': 115, 'BustMax': 125, 'WaistMin': 95, 'WaistMax': 105, 'SleeveMin': 67, 'SleeveMax': 72 }
+            }".Replace("'", "\""),
+                   IsTop = true,
                    Color = "Blue",
                    Material = "Polyester",
                    Stock = 30,
@@ -83,6 +105,13 @@ namespace PresizelyWeb.Data
                    Name = "Casual Check Shirt",
                    Price = 25.99M,
                    Size = "S,M,L,XL",
+                   SizeChartJson = @"{
+                'S': { 'BustMin': 85, 'BustMax': 95, 'WaistMin': 65, 'WaistMax': 75, 'SleeveMin': 52, 'SleeveMax': 57 },
+                'M': { 'BustMin': 95, 'BustMax': 105, 'WaistMin': 75, 'WaistMax': 85, 'SleeveMin': 57, 'SleeveMax': 62 },
+                'L': { 'BustMin': 105, 'BustMax': 115, 'WaistMin': 85, 'WaistMax': 95, 'SleeveMin': 62, 'SleeveMax': 67 },
+                'XL': { 'BustMin': 115, 'BustMax': 125, 'WaistMin': 95, 'WaistMax': 105, 'SleeveMin': 67, 'SleeveMax': 72 }
+            }".Replace("'", "\""),
+                   IsTop = true,
                    Color = "Red",
                    Material = "Cotton",
                    Stock = 35,
@@ -98,6 +127,13 @@ namespace PresizelyWeb.Data
                    Name = "Blue Denim Jeans",
                    Price = 39.99M,
                    Size = "32,34,36,38",
+                   SizeChartJson = @"{
+                '32': { 'WaistMin': 76, 'WaistMax': 81, 'HipsMin': 91, 'HipsMax': 96, 'InseamMin': 75, 'InseamMax': 80 },
+                '34': { 'WaistMin': 82, 'WaistMax': 87, 'HipsMin': 97, 'HipsMax': 102, 'InseamMin': 75, 'InseamMax': 80 },
+                '36': { 'WaistMin': 88, 'WaistMax': 93, 'HipsMin': 103, 'HipsMax': 108, 'InseamMin': 76, 'InseamMax': 81 },
+                '38': { 'WaistMin': 94, 'WaistMax': 99, 'HipsMin': 109, 'HipsMax': 114, 'InseamMin': 76, 'InseamMax': 81 }
+            }".Replace("'", "\""),
+                   IsTop = false,
                    Color = "Blue",
                    Material = "Denim",
                    Stock = 60,
@@ -112,6 +148,13 @@ namespace PresizelyWeb.Data
                    Name = "Black Skinny Jeans",
                    Price = 42.99M,
                    Size = "32,34,36,38",
+                   SizeChartJson = @"{
+                     '32': { 'WaistMin': 76, 'WaistMax': 81, 'HipsMin': 91, 'HipsMax': 96, 'InseamMin': 75, 'InseamMax': 80 },
+                       '34': { 'WaistMin': 82, 'WaistMax': 87, 'HipsMin': 97, 'HipsMax': 102, 'InseamMin': 75, 'InseamMax': 80 },
+                      '36': { 'WaistMin': 88, 'WaistMax': 93, 'HipsMin': 103, 'HipsMax': 108, 'InseamMin': 76, 'InseamMax': 81 },
+                      '38': { 'WaistMin': 94, 'WaistMax': 99, 'HipsMin': 109, 'HipsMax': 114, 'InseamMin': 76, 'InseamMax': 81 }
+                   }".Replace("'", "\""),
+                   IsTop = false,
                    Color = "Black",
                    Material = "Denim",
                    Stock = 45,
@@ -127,6 +170,13 @@ namespace PresizelyWeb.Data
                    Name = "Chino Trousers",
                    Price = 34.99M,
                    Size = "32,34,36,38",
+                   SizeChartJson = @"{
+                        '32': { 'WaistMin': 76, 'WaistMax': 81, 'HipsMin': 91, 'HipsMax': 96, 'InseamMin': 75, 'InseamMax': 80 },
+                        '34': { 'WaistMin': 82, 'WaistMax': 87, 'HipsMin': 97, 'HipsMax': 102, 'InseamMin': 75, 'InseamMax': 80 },
+                        '36': { 'WaistMin': 88, 'WaistMax': 93, 'HipsMin': 103, 'HipsMax': 108, 'InseamMin': 76, 'InseamMax': 81 },
+                        '38': { 'WaistMin': 94, 'WaistMax': 99, 'HipsMin': 109, 'HipsMax': 114, 'InseamMin': 76, 'InseamMax': 81 }
+                     }".Replace("'", "\""),
+                   IsTop = false,
                    Color = "Khaki",
                    Material = "Cotton",
                    Stock = 25,
@@ -141,6 +191,13 @@ namespace PresizelyWeb.Data
                    Name = "Formal Trousers",
                    Price = 49.99M,
                    Size = "32,34,36,38",
+                   SizeChartJson = @"{
+                       '32': { 'WaistMin': 76, 'WaistMax': 81, 'HipsMin': 91, 'HipsMax': 96, 'InseamMin': 75, 'InseamMax': 80 },
+                       '34': { 'WaistMin': 82, 'WaistMax': 87, 'HipsMin': 97, 'HipsMax': 102, 'InseamMin': 75, 'InseamMax': 80 },
+                       '36': { 'WaistMin': 88, 'WaistMax': 93, 'HipsMin': 103, 'HipsMax': 108, 'InseamMin': 76, 'InseamMax': 81 },
+                        '38': { 'WaistMin': 94, 'WaistMax': 99, 'HipsMin': 109, 'HipsMax': 114, 'InseamMin': 76, 'InseamMax': 81 }
+                   }".Replace("'", "\""),
+                   IsTop = false,
                    Color = "Grey",
                    Material = "Polyester",
                    Stock = 20,
@@ -156,6 +213,13 @@ namespace PresizelyWeb.Data
                    Name = "Leather Jacket",
                    Price = 99.99M,
                    Size = "S,M",
+                   SizeChartJson = @"{
+                          'S': { 'BustMin': 85, 'BustMax': 95, 'WaistMin': 65, 'WaistMax': 75, 'SleeveMin': 55, 'SleeveMax': 60 },
+                          'M': { 'BustMin': 95, 'BustMax': 105, 'WaistMin': 75, 'WaistMax': 85, 'SleeveMin': 60, 'SleeveMax': 65 },
+                          'L': { 'BustMin': 105, 'BustMax': 115, 'WaistMin': 85, 'WaistMax': 95, 'SleeveMin': 65, 'SleeveMax': 70 },
+                          'XL': { 'BustMin': 115, 'BustMax': 125, 'WaistMin': 95, 'WaistMax': 105, 'SleeveMin': 70, 'SleeveMax': 75 }
+                       }".Replace("'", "\""), // Replace single quotes with double quotes for valid JSON
+                   IsTop = true,
                    Color = "Black",
                    Material = "Leather",
                    Stock = 15,
@@ -163,7 +227,7 @@ namespace PresizelyWeb.Data
                    SpecialTag = "Premium",
                    CategoryId = 5,
                    ImageUrl = "/lib/images/product/Jacket1.png"
-               }      
+               }
            );
         }
     }
