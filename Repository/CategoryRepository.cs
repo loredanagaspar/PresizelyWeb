@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PresizelyWeb.Data;
+using PresizelyWeb.Repository.IRepository;
 
-namespace PresizelyWeb.Repository.IRepository
+namespace PresizelyWeb.Repository
 {
     public class CategoryRepository : ICategoryRepository
     {
@@ -10,9 +11,9 @@ namespace PresizelyWeb.Repository.IRepository
 
         public CategoryRepository(ApplicationDbContext db)
         {
-            _db = db;   
+            _db = db;
         }
-        public async Task <Category> CreateAsync(Category obj)
+        public async Task<Category> CreateAsync(Category obj)
         {
             await _db.Category.AddAsync(obj);
             await _db.SaveChangesAsync();
@@ -21,11 +22,11 @@ namespace PresizelyWeb.Repository.IRepository
 
         public async Task<bool> DeleteAsync(int id)
         {
-          var obj = await _db.Category.FirstOrDefaultAsync(u => u.Id == id);
+            var obj = await _db.Category.FirstOrDefaultAsync(u => u.Id == id);
             if (obj != null)
             {
                 _db.Category.Remove(obj);
-               return (await _db.SaveChangesAsync())>0;
+                return await _db.SaveChangesAsync() > 0;
             }
             return false;
         }
@@ -37,7 +38,7 @@ namespace PresizelyWeb.Repository.IRepository
             {
                 return new Category();
             }
-            return obj; 
+            return obj;
         }
 
         public async Task<IEnumerable<Category>> GetAllAsync()
@@ -47,13 +48,13 @@ namespace PresizelyWeb.Repository.IRepository
 
         public async Task<Category> UpdateAsync(Category obj)
         {
-            var objFromDb= await _db.Category.FirstOrDefaultAsync(u=> u.Id == obj.Id);
+            var objFromDb = await _db.Category.FirstOrDefaultAsync(u => u.Id == obj.Id);
 
             if (objFromDb != null)
             {
                 objFromDb.Name = obj.Name;
                 _db.Category.Update(objFromDb);
-                await _db.SaveChangesAsync() ;
+                await _db.SaveChangesAsync();
                 return objFromDb;
             }
 

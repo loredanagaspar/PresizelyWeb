@@ -10,6 +10,7 @@
 @inject IJSRuntime _JS
 @inject NavigationManager _NavigationManager
 @inject SharedStateService _sharedstateService
+@inject PaymentService _paymentService
 @attribute [Authorize]
 
 
@@ -268,6 +269,9 @@ else
             OrderHeader.OrderDate = DateTime.Now;
             OrderHeader.OrderDetails = SD.ConvertShoppingCartListOrderDetail(ShoppingCarts.ToList());
 
+            var session = _paymentService.CreateStripeCheckoutSession(OrderHeader);
+            OrderHeader.SessionId = session.Id;
+
             // Save the order
             var createdOrder = await _orderRepository.CreateAsync(OrderHeader);
 
@@ -277,7 +281,7 @@ else
                 _JS?.ToastrSuccess("Order placed successfully!");
 
                 // Navigate to the order confirmation page
-                _NavigationManager.NavigateTo($"/order/confirmation/{createdOrder.Id}");
+                _NavigationManager.NavigateTo(session.Url);
             }
             else
             {
