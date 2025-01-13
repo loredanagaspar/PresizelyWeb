@@ -1,0 +1,86 @@
+﻿@inject NavigationManager NavigationManager
+
+<EditForm Model="@SizeCalculator" OnValidSubmit="@OnSubmit">
+    <div class="d-flex justify-content-between align-items-start">
+        <!-- Size Calculator -->
+        <div class="calculator-container ">
+     
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+
+            <div class="mb-3">
+                <label for="Height" class="form-label">Height (cm):</label>
+                <InputNumber id="Height" @bind-Value="SizeCalculator.Height" class="form-control" />
+                <ValidationMessage For="@(() => SizeCalculator.Height)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Weight" class="form-label">Weight (kg):</label>
+                <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight" class="form-control" />
+                <ValidationMessage For="@(() => SizeCalculator.Weight)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Waist" class="form-label">Waist (cm):</label>
+                <InputNumber id="Waist" @bind-Value="SizeCalculator.Waist" class="form-control" />
+                <ValidationMessage For="@(() => SizeCalculator.Waist)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Hips" class="form-label">Hips (cm):</label>
+                <InputNumber id="Hips" @bind-Value="SizeCalculator.Hips" class="form-control" />
+                <ValidationMessage For="@(() => SizeCalculator.Hips)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Inseam" class="form-label">Inside leg(cm):</label>
+                <InputNumber id="Inseam" @bind-Value="SizeCalculator.Inseam" class="form-control" />
+                <ValidationMessage For="@(() => SizeCalculator.Inseam)" />
+            </div>
+
+            <div class="text-center d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-primary px-4">Calculate</button>
+                <button type="button" class="btn btn-secondary px-4" @onclick="NavigateBack">Back</button>
+            </div>
+        </div>
+
+    </div>
+
+        <div class="card shadow border mt-4">
+        <div class="card-header bg-gradient m-lg-0 py-3" style="background-color: #d5f5e3;">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-grey py-2">How to measure</h2>
+                </div>
+            </div>
+            <ul class="list-unstyled measure-list" style="padding-left: 20px;">
+                <li class="mb-2">
+                    <span class="fw-bold fst-italic">Waist:</span>
+                    <span class="fst-italic">1. Measure your waist at the narrowest point.</span>
+                </li>
+                <li class="mb-2">
+                    <span class="fw-bold fst-italic">Low Hip:</span>
+                    <span class="fst-italic">2. Measure your low hip around the fullest part of your hip.</span>
+                </li>
+                <li class="mb-2">
+                    <span class="fw-bold fst-italic">3. Inside Leg Length:</span>
+                    <span class="fst-italic">Measure from the crotch to the floor.</span>
+                </li>
+            </ul>
+        </div>
+     </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public SizeCalculator SizeCalculator { get; set; }
+
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/products");
+    }
+}

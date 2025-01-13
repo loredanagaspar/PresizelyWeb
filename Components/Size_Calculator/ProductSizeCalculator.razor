@@ -1,0 +1,136 @@
+﻿@page "/size-calculator/{productId:int}"
+@using PresizelyWeb.Data
+@inject IProductRepository ProductRepository
+@inject NavigationManager NavigationManager
+
+<div class="size-calculator-container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg" style="width: 400px; border-radius: 15px;">
+        <div class="card-header bg-primary text-white text-center" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+            <h4>Size Calculator</h4>
+        </div>
+        <div class="card-body">
+            @if (_isLoading)
+            {
+                <div class="text-center">
+                    <p>Loading product data...</p>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <div class="alert alert-danger text-center">
+                    <p>@_errorMessage</p>
+                    <button class="btn btn-secondary" @onclick="NavigateBack">Back to Products</button>
+                </div>
+            }
+            else
+            {
+                @if (_isProcessing)
+                {
+                    <div class="text-center">
+                        <p>Calculating size, please wait...</p>
+                    </div>
+                }
+                else
+                {
+                    @if (_isTop)
+                    {
+                        <TopSizeForm SizeCalculator="_sizeCalculator" OnSubmit="CalculateSize" />
+                    }
+                    else
+                    {
+                        <BottomSizeForm SizeCalculator="_sizeCalculator" OnSubmit="CalculateSize" />
+                    }
+
+                }
+
+                @if (!string.IsNullOrEmpty(_sizeCalculator.RecommendedSize))
+                {
+                    <div class="alert alert-success text-center mt-3">
+                        <strong>Recommended Size:</strong> @_sizeCalculator.RecommendedSize
+                        @if (!string.IsNullOrEmpty(_sizeCalculator.RecommendationMessage))
+                        {
+                            <p>@_sizeCalculator.RecommendationMessage</p>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private SizeCalculator _sizeCalculator = new SizeCalculator();
+    private bool _isProcessing = false;
+    private bool _isLoading = true;
+    private string _errorMessage = string.Empty;
+    private bool _isTop = true;
+
+    [Parameter]
+    public int ProductId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var product = await ProductRepository.GetAsync(ProductId);
+
+            if (product == null)
+            {
+                _errorMessage = "Product not found.";
+            }
+            else
+            {
+                _isTop = product.IsTop; // Determine if this is a top or bottom
+                Console.WriteLine($"Product Loaded: {product.Name}, IsTop: {_isTop}");
+                _sizeCalculator.RecommendedSize = string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An error occurred while loading the product: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task CalculateSize()
+    {
+        try
+        {
+            _isProcessing = true;
+            var product = await ProductRepository.GetAsync(ProductId);
+
+            if (product == null || string.IsNullOrEmpty(product.SizeChartJson))
+            {
+                _errorMessage = "Size chart not available for this product.";
+                return;
+            }
+
+            Console.WriteLine($"Calculating size for: {product.Name}");
+            Console.WriteLine($"IsTop: {_isTop}, SizeChartJson: {product.SizeChartJson}");
+
+            _sizeCalculator.RecommendedSize = _sizeCalculator.MatchSize(product.SizeChartJson, _isTop);
+
+            Console.WriteLine($"Recommended Size: {_sizeCalculator.RecommendedSize}");
+            Console.WriteLine($"Recommendation Message: {_sizeCalculator.RecommendationMessage}");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An error occurred during size calculation: {ex.Message}";
+        }
+        finally
+        {
+            _isProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/products");
+    }
+}

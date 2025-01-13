@@ -190,32 +190,9 @@ a, .btn-link {
     margin-bottom: 1em;
 }
 
-/* Footer */
-.footer {
-    background-color: olivegreen; /* Match overall color theme */
-    margin-top: 1.5rem; /* Adjust spacing for consistency */
-    padding: 2rem 1rem;
-}
 
-.footer-container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
 
-.footer-section {
-    flex: 1;
-    margin: 1em;
-}
 
-    .footer-section h3 {
-        font-size: 1.5em;
-        margin-bottom: 1em;
-    }
-
-    .footer-section p {
-        font-size: 1.1em;
-    }
 
 /* Background */
 .home-page {
@@ -231,6 +208,7 @@ a, .btn-link {
     background-color: #f8f9fa;
     min-height: 100vh;
     padding: 20px;
+    width: 100%;
 }
 
 .card {
@@ -250,3 +228,12 @@ a, .btn-link {
 button {
     border-radius: 10px;
 }
+/* Make the text smaller in the "How to measure" section */
+.measure-list {
+    font-size: 0.9rem; 
+    line-height: 1.5; 
+}
+
+    .measure-list .fst-italic {
+        font-size: 0.85rem; 
+    }

@@ -1,0 +1,80 @@
+﻿@inject NavigationManager NavigationManager
+
+<EditForm Model="@SizeCalculator" OnValidSubmit="@OnSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <div class="mb-3">
+        <label for="Height" class="form-label">Height (cm):</label>
+        <InputNumber id="Height" @bind-Value="SizeCalculator.Height" class="form-control" />
+        <ValidationMessage For="@(() => SizeCalculator.Height)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Weight" class="form-label">Weight (kg):</label>
+        <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight" class="form-control" />
+        <ValidationMessage For="@(() => SizeCalculator.Weight)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Bust" class="form-label">Chest (cm):</label>
+        <InputNumber id="Bust" @bind-Value="SizeCalculator.Bust" class="form-control" />
+        <ValidationMessage For="@(() => SizeCalculator.Bust)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Waist" class="form-label">Waist (cm):</label>
+        <InputNumber id="Waist" @bind-Value="SizeCalculator.Waist" class="form-control" />
+        <ValidationMessage For="@(() => SizeCalculator.Waist)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="SleeveLength" class="form-label">Arm Length (cm):</label>
+        <InputNumber id="SleeveLength" @bind-Value="SizeCalculator.SleeveLength" class="form-control" />
+        <ValidationMessage For="@(() => SizeCalculator.SleeveLength)" />
+    </div>
+
+    <div class="text-center d-flex justify-content-center gap-3">
+        <button type="submit" class="btn btn-primary px-4">Calculate</button>
+        <button type="button" class="btn btn-secondary px-4" @onclick="NavigateBack">Back</button>
+    </div>
+
+    
+        <div class="card shadow border mt-4">
+        <div class="card-header bg-gradient m-lg-0 py-3" style="background-color: #d5f5e3;">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-grey py-2">How to measure</h2>
+                </div>
+            </div>
+            <ul class="list-unstyled measure-list" style="padding-left: 20px;">
+                <li class="mb-2">
+                    <span class="fw-bold fst-italic">Chest:</span>
+                    <span class="fst-italic">1. Measure your chest over the fullest part.</span>
+                </li>
+                <li class="mb-2">
+                    <span class="fw-bold fst-italic">Waist:</span>
+                    <span class="fst-italic">2. Measure your waist at the narrowest point.</span>
+                </li>
+                <li class="mb-2">
+                    <span class="fw-bold fst-italic">3. Arm Lengh:</span>
+                    <span class="fst-italic">Measure from your shoulder point to your wrist.</span>
+                </li>
+            </ul>
+        </div>
+  </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public SizeCalculator SizeCalculator { get; set; }
+
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    private void NavigateBack()
+    {
+        // Navigate to the previous page or a specific route
+        NavigationManager.NavigateTo("/products"); // Update the URL to your desired route
+    }
+}

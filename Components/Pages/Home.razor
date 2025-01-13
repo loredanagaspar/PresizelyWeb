@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Globalization
 @inject IProductRepository _productRepository
 
 <div class="home-page">
@@ -16,7 +17,7 @@
             <!-- Hero Section -->
             <div class="hero-section d-flex align-items-center justify-content-center" style="height: 30vh; background-image: url('lib/images/GreenHands.png'); background-size: cover; background-position: center;">
                 <div class="text-center">
-                    <h1>Welcome to EcoFashion</h1>
+                    <h1>Welcome to PreSIZEly</h1>
                     <p>Style with sustainability in mind.</p>
                     <a href="/products" class="btn btn-primary">Explore Garments</a>
                 </div>
@@ -42,7 +43,7 @@
                                     <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" />
                                     <div class="card-body text-center">
                                         <h5 class="card-title">@product.Name</h5>
-                                        <p class="card-text">$@product.Price</p>
+                                        <p class="card-text">@product.Price.ToString("C", CultureInfo.GetCultureInfo("en-GB"))</p>
                                         <a href="/products/@product.Id" class="btn btn-outline-success">View Details</a>
                                     </div>
                                 </div>
@@ -53,6 +54,38 @@
             </div>
         </div>
     }
+    <!-- Footer -->
+    <footer class="footer bg-success-subtle text-muted text-center py-4">
+        <div class="container">
+            <div class="row">
+                <!-- About Us Section -->
+                <div class="col-md-4">
+                    <h3 class="h5">About Us</h3>
+                    <p>PreSIZEly is committed to sustainable fashion. We aim to reduce the environmental impact of online shopping.</p>
+                </div>
+                <!-- Quick Links Section -->
+                <div class="col-md-4">
+                    <h3 class="h5">Quick Links</h3>
+                    <p>
+                        <a href="/about" class="text-muted text-decoration-none">About</a> |
+                        <a href="/sustainability" class="text-muted text-decoration-none">Sustainability</a> |
+                        <a href="/contact" class="text-muted text-decoration-none">Contact</a>
+                    </p>
+                </div>
+                <!-- Contact Section -->
+                <div class="col-md-4">
+                    <h3 class="h5">Contact</h3>
+                    <p>Email: support@presizely.com</p>
+                    <p>Phone: +1-234-567-890</p>
+                </div>
+            </div>
+            <hr class="my-3">
+            <p class="mb-0">&copy; 2025 PreSIZEly. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+
 </div>
 
 @code {

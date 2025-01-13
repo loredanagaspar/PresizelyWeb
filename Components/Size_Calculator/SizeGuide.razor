@@ -1,0 +1,159 @@
+﻿@page "/size-guide/{productId:int}"
+@using PresizelyWeb.Data
+@using System.Text.Json
+@inject IProductRepository ProductRepository
+@inject NavigationManager NavigationManager
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Size Guide</h2>
+
+    @if (_isLoading)
+    {
+        <div class="text-center">
+            <p>Loading size guide...</p>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <div class="alert alert-danger text-center">
+            <p>@_errorMessage</p>
+            <button class="btn btn-secondary" @onclick="NavigateBack">Back to Product</button>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="text-center">@_product.Name</h4>
+
+                @if (_sizeChartHeaders.Count > 0 && _sizeChart.Count > 0)
+                {
+                    <table class="table table-bordered mt-4">
+                        <thead class="table-light">
+                            <tr>
+                                @foreach (var header in _sizeChartHeaders)
+                                {
+                                    <th>@header</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in _sizeChart)
+                            {
+                                <tr>
+                                    @foreach (var cell in row)
+                                    {
+                                        <td>@cell</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-center text-muted">No size guide available for this product.</p>
+                }
+
+                <!-- How to Measure Section -->
+                <div class="how-to-measure mt-5 text-center">
+                    <h4 class="mb-3">How to Measure</h4>
+                    <img src="@GetMeasurementImage()" alt="How to Measure" class="img-fluid rounded" style="max-width: 600px;">
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private Product _product;
+    private List<string> _sizeChartHeaders = new List<string>();
+    private List<List<string>> _sizeChart = new List<List<string>>();
+    private bool _isLoading = true;
+    private string _errorMessage = string.Empty;
+
+    [Parameter]
+    public int ProductId { get; set; }
+
+    // Mapping JSON keys to user-friendly names
+    private readonly Dictionary<string, string> _headerMappings = new Dictionary<string, string>
+    {
+        { "ChestMin", "Chest Min (cm)" },
+        { "ChestMax", "Chest Max (cm)" },
+        { "WaistMin", "Waist Min (cm)" },
+        { "WaistMax", "Waist Max (cm)" },
+        { "SleeveLengthMin", "Sleeve Length Min (cm)" },
+        { "SleeveLengthMax", "Sleeve Length Max (cm)" },
+        { "HipsMin", "Hips Min (cm)" },
+        { "HipsMax", "Hips Max (cm)" },
+        { "InseamMin", "Inside Leg Min (cm)" },
+        { "InseamMax", "Inside Leg (cm)" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _product = await ProductRepository.GetAsync(ProductId);
+
+            if (_product == null)
+            {
+                _errorMessage = "Product not found.";
+                return;
+            }
+
+            ParseSizeChart(_product.SizeChartJson);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An error occurred while loading the size guide: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void ParseSizeChart(string sizeChartJson)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(sizeChartJson))
+            {
+                _sizeChart = new List<List<string>>();
+                return;
+            }
+
+            var sizeChart = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(sizeChartJson);
+
+            if (sizeChart != null)
+            {
+                // Headers for the table
+                _sizeChartHeaders = new List<string> { "Size" };
+                _sizeChartHeaders.AddRange(
+                    sizeChart.First().Value.Keys.Select(key => _headerMappings.ContainsKey(key) ? _headerMappings[key] : key)
+                );
+
+                // Table rows
+                _sizeChart = sizeChart.Select(size =>
+                    new List<string> { size.Key }
+                    .Concat(size.Value.Values.Select(v => v.ToString())).ToList()
+                ).ToList();
+            }
+        }
+        catch
+        {
+            _sizeChart = new List<List<string>>();
+        }
+    }
+    private string GetMeasurementImage()
+    {
+        // Return the correct image based on the product type (top or bottom)
+        return _product.IsTop ? "/lib/images/HowToMeasureTops.png" : "/lib/images/HowToMeasureBottoms.png";
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo($"/product/{ProductId}");
+    }
+}

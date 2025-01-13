@@ -79,19 +79,29 @@
                         <!-- Description -->
                         <p class="card-text mt-2">@((MarkupString)prod.Description)</p>
 
-                        <!-- Dropdown and Size Calculator Aligned -->
-                        <div class="d-flex justify-content-start align-items-center gap-3">
-                            <label for="sizeDropdown-@prod.Id" class="form-label mb-0">Available Sizes:</label>
-                            <select id="sizeDropdown-@prod.Id" class="form-select w-auto" @bind="selectedSize">
-                                <option value="" disabled selected>Select a size</option> <!-- Placeholder option -->
-                                @foreach (var size in prod.Size.Split(','))
-                                {
-                                    <option value="@size">@size</option>
-                                }
-                            </select>
-                            <a class="btn btn-info px-3" href="/size-calculator/@prod.Id">
-                                <i class="bi bi-calculator"></i> Size Calculator
-                            </a>
+                        <!-- Dropdown, Size Guide, and Size Calculator -->
+                        <div class="d-flex flex-column justify-content-start align-items-start gap-3">
+                            <!-- Size Dropdown -->
+                            <div class="d-flex align-items-center">
+                                <label for="sizeDropdown-@prod.Id" class="form-label mb-0">Available Sizes:</label>
+                                <select id="sizeDropdown-@prod.Id" class="form-select w-auto ms-2" @bind="selectedSize">
+                                    <option value="" disabled selected>Select a size</option> <!-- Placeholder option -->
+                                    @foreach (var size in prod.Size.Split(','))
+                                    {
+                                        <option value="@size">@size</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- Size Guide and Size Calculator Links -->
+                            <div class="d-flex gap-3">
+                                <a class="btn btn-secondary" href="/size-guide/@prod.Id">
+                                    <i class="bi bi-table"></i> Product Measurements
+                                </a>
+                                <a class="btn btn-info" href="/size-calculator/@prod.Id">
+                                    <i class="bi bi-calculator"></i> Size Calculator
+                                </a>
+                            </div>
                         </div>
 
                         
@@ -102,6 +112,8 @@
                                 <i class="bi bi-cart3"></i> Add to cart
                             </button>
                         </h4>
+
+                        <a href="/products/@prod.Id" class="btn btn-outline-success">View Details</a>
                     </div>
                 </div>
             }
