@@ -204,12 +204,10 @@
         }
         var authState = await _AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
-
-        if (!authenticated)
+        if (user?.Identity == null || !user.Identity.IsAuthenticated)
         {
-            Console.WriteLine("Redirecting to: /Account/Login");
-            _NavigationManager.NavigateTo("/Account/Login");
+            // Redirect unauthenticated users to login page
+            _NavigationManager.NavigateTo("/Account/Login", true);
             return;
         }
 

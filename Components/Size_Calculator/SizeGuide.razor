@@ -9,8 +9,8 @@
 
     @if (_isLoading)
     {
-        <div class="text-center">
-            <p>Loading size guide...</p>
+           <div class="position-absolute w-75 h-7 d-flex flex-column align-items-center bg-white justify-content-center">
+            <img src="/lib/images/loading.gif" alt="loading" />
         </div>
     }
     else if (!string.IsNullOrEmpty(_errorMessage))

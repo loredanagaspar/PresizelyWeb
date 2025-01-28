@@ -3,16 +3,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PresizelyWeb.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+    // ApplicationDbContext inherits from IdentityDbContext to enable ASP.NET Core Identity features for user
+    // authentication and authorization.
+    // This class serves as the bridge between the database and the application logic by mapping entities to database tables.
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        // Constructor accepts DbContextOptions and passes them to the base class constructor.
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
 
+        // DbSet for Category entity, maps the Category model to the "Categories" table in the database.
         public DbSet<Category> Category { get; set; }
+
+        // DbSet for Product entity, maps the Product model to the "Products" table in the database.
         public DbSet<Product> Product { get; set; }
+
+        // DbSet for ShoppingCart entity, maps the ShoppingCart model to the "ShoppingCarts" table in the database.
         public DbSet<ShoppingCart> ShoppingCart { get; set; }
+
+        // DbSet for OrderHeader entity, maps the OrderHeader model to the "OrderHeaders" table in the database.
         public DbSet<OrderHeader> OrderHeader { get; set; }
+
+        // DbSet for OrderDetail entity, maps the OrderDetail model to the "OrderDetails" table in the database.
         public DbSet<OrderDetail> OrderDetail { get; set; }
-
-
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

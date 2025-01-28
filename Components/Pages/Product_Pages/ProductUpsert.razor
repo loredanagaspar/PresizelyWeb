@@ -72,6 +72,13 @@ else
                     </div>
 
                     <div class="form-floating py-3 col-12">
+                        <label for="sizeChartJson">Size Chart (JSON Format)</label>
+                        <textarea @bind="Product.SizeChartJson" class="form-control" id="sizeChartJson" rows="6"
+                                  placeholder="Enter JSON for the size chart"></textarea>
+                        <ValidationMessage For="@(() => Product.SizeChartJson)" />
+                    </div>
+
+                    <div class="form-floating py-3 col-12">
                         <InputNumber @bind-Value="Product.Stock" class="form-control" id="stock" placeholder="Quantity" />
                         <label for="stock">Quantity</label>
                         <ValidationMessage For="@(() => Product.Stock)" />
@@ -172,6 +179,7 @@ else
         if (Id > 0)
         {
             Product = await _productRepository.GetAsync(Id);
+            Console.WriteLine($"Loaded product: {Product.Name}, Size Chart JSON: {Product.SizeChartJson}");
         }
 
         _categories = await _categoryRepository.GetAllAsync();
@@ -183,7 +191,11 @@ else
         IsProcessing = true;
         try
         {
-            Console.WriteLine($"UpsertProduct called with Product: {Product.Name}");
+            if (!IsValidJson(Product.SizeChartJson))
+            {
+                await _JS.ToastrError("Invalid JSON format for Size Chart.");
+                return;
+            }
             if (Product.Id == 0)
             {
                 await _productRepository.CreateAsync(Product);
@@ -252,5 +264,19 @@ else
         return;
     }
 
+    private bool IsValidJson(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return true; // Allow empty input if SizeChartJson is optional
 
+        try
+        {
+            System.Text.Json.JsonDocument.Parse(json);
+            return true;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return false; // Invalid JSON
+        }
+    }
 }

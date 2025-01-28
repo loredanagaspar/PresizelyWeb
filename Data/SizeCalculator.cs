@@ -5,46 +5,57 @@ using System.Linq;
 using System.Text.Json;
 
 namespace PresizelyWeb.Data
-{
+
+{// Represents the Size Calculator entity used for determining the recommended size 
+ // based on user inputs and stored size charts.
     public class SizeCalculator
     {
         // Common Measurements
+
+        // Height is a required field, validated to ensure input falls within the realistic range.
         [Required(ErrorMessage = "Height is required for accurate size recommendation.")]
         [Range(140, 230, ErrorMessage = "Height must be between 140 cm and 230 cm.")]
-        public int Height { get; set; } // in cm
+        public int Height { get; set; } // Height in centimeters.
 
+        // Weight is a required field, validated to ensure input falls within the realistic range.
         [Required(ErrorMessage = "Weight is required for accurate size recommendation.")]
         [Range(40, 200, ErrorMessage = "Weight must be between 40 kg and 200 kg.")]
-        public int Weight { get; set; } // in kg
+        public int Weight { get; set; } // Weight in kilograms.
 
-        // Tops Measurements (Essential and Optional)
-       
-      
-        public int? Bust { get; set; } // in cm (Chest for menswear)
+        // Tops Measurements (Optional)
 
+        // Bust measurement in centimeters, applicable for tops (optional input).
+        public int? Bust { get; set; }
 
-        public int? Waist { get; set; } // in cm
+        // Waist measurement in centimeters, applicable for both tops and bottoms (optional input).
+        public int? Waist { get; set; }
 
-    
-        public int? SleeveLength { get; set; } // Optional for tops
+        // Sleeve length in centimeters, used for certain types of tops like shirts or jackets (optional input).
+        public int? SleeveLength { get; set; }
 
-        // Bottoms Measurements (Essential and Optional)
-   
-    
-        public int? BottomsWaist { get; set; } // in cm
+        // Bottoms Measurements (Optional)
 
-   
-       
-        public int? Hips { get; set; } // in cm
+        // Waist measurement specific to bottoms, in centimeters (optional input).
+        public int? BottomsWaist { get; set; }
 
+        // Hips measurement in centimeters, applicable for bottoms like pants or skirts (optional input).
+        public int? Hips { get; set; }
 
-        public int? Inseam { get; set; } // Optional for bottoms
+        // Inseam measurement in centimeters, relevant for bottoms like pants or trousers (optional input).
+        public int? Inseam { get; set; }
 
-        // Output
+        // Output Properties
+
+        // The recommended size based on the user-provided measurements and size chart data.
         public string RecommendedSize { get; set; }
+
+        // A message providing additional recommendations or feedback to the user about the recommended size.
         public string RecommendationMessage { get; set; }
 
-        // Match size based on size chart
+
+        /// <summary>
+        /// Matches the user's measurements to the closest size from the given size chart.
+        /// </summary>
         public string MatchSize(string sizeChartJson, bool isTop)
         {
             var sizeChart = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(sizeChartJson);
@@ -116,28 +127,49 @@ namespace PresizelyWeb.Data
         }
 
 
-
-
+        /// <summary>
+        /// Finds the best matching size from the size chart based on the user's measurements.
+        /// </summary>
+        /// /// <returns>
+        /// The best matching size and its corresponding measurement ranges as a KeyValuePair.
+        /// Returns null if no match is found.
+        /// </returns>
+        /// <remarks>
+        /// This method compares each size in the size chart against the user's measurements
+        /// to calculate the total difference. The size with the smallest difference is selected
+        /// as the best match. Debugging information is logged to the console for each size.
+        /// </remarks>
         private KeyValuePair<string, Dictionary<string, int>>? FindBestMatch(
-     Dictionary<string, Dictionary<string, int>> sizeChart, bool isTop)
+            Dictionary<string, Dictionary<string, int>> sizeChart, bool isTop)
         {
+            // Initialize the variables to track the best match and the smallest difference
             KeyValuePair<string, Dictionary<string, int>>? bestMatch = null;
             int smallestDifference = int.MaxValue;
 
+            // Iterate through each size in the size chart
             foreach (var size in sizeChart)
             {
+                // Debug log: Display the current size being checked
                 Console.WriteLine($"Checking size: {size.Key}");
+
+                // Calculate the total difference for this size based on the user's measurements
                 int difference = CalculateDifference(size.Value, isTop);
+
+                // Debug log: Display the calculated difference for the current size
                 Console.WriteLine($"Size: {size.Key}, Difference: {difference}");
 
+                // Update the best match if this size has a smaller difference
                 if (difference < smallestDifference)
                 {
-                    smallestDifference = difference;
-                    bestMatch = size;
+                    smallestDifference = difference; // Update the smallest difference
+                    bestMatch = size; // Update the best match to the current size
                 }
             }
 
+            // Debug log: Display the best matching size after all sizes are checked
             Console.WriteLine($"Best Match: {bestMatch?.Key}");
+
+            // Return the best match, or null if no match was found
             return bestMatch;
         }
 

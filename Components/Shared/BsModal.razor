@@ -1,43 +1,55 @@
-﻿
-
-<!-- Modal -->
+﻿<!-- Modal -->
+<!-- This is the Bootstrap modal component that provides a confirmation dialog for user actions. -->
 <div class="modal fade" id="bsConfirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modal dialog box with large size and centered alignment -->
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
+            <!-- Modal header section -->
             <div class="modal-header">
+                <!-- Modal title, dynamically set via the Title parameter -->
                 <h1 class="modal-title fs-5" id="exampleModalLabel">@Title</h1>
+                <!-- Close button to dismiss the modal -->
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <!-- Modal body section -->
             <div class="modal-body">
-                <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal" @onclick="()=>ConfirmationClicked(false)" style="width:150px;">Close</button>
-                <button type="button" class="btn btn-lg @ButtonBootsrapStyle" @onclick=" ()=>ConfirmationClicked(true)" style="width:150px;">@ButtonText</button>
+                <!-- Close button, styled with Bootstrap classes, calls the ConfirmationClicked method with 'false' -->
+                <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal"
+                        @onclick="()=>ConfirmationClicked(false)" style="width:150px;">
+                    Close
+                </button>
+                <!-- Confirmation button, styled dynamically with the ButtonBootstrapStyle parameter, calls ConfirmationClicked with 'true' -->
+                <button type="button" class="btn btn-lg @ButtonBootsrapStyle"
+                        @onclick="()=>ConfirmationClicked(true)" style="width:150px;">
+                    @ButtonText
+                </button>
             </div>
-       
         </div>
     </div>
 </div>
 
-@code
-{
+@code {
+    // Event callback to communicate the confirmation result (true or false) to the parent component.
     [Parameter]
-    public EventCallback<bool> OnModalConfirmation{ get; set; }
+    public EventCallback<bool> OnModalConfirmation { get; set; }
 
+    // Title of the modal, set dynamically by the parent component.
     [Parameter]
     public string Title { get; set; } = "Please Confirm";
 
+    // Bootstrap style class for the confirmation button, allowing customization (e.g., "btn-primary").
     [Parameter]
-
     public string ButtonBootsrapStyle { get; set; } = "btn-primary";
 
+    // Text for the confirmation button, set dynamically (e.g., "Confirm").
     [Parameter]
-
     public string ButtonText { get; set; } = "Confirm";
 
-
-    private async Task ConfirmationClicked (bool value)
+    // Private method to handle button clicks and invoke the OnModalConfirmation callback.
+    private async Task ConfirmationClicked(bool value)
     {
-        if(value)
-
+        // If the confirmation button was clicked (value = true), invoke the callback with 'true'.
+        if (value)
         {
             await OnModalConfirmation.InvokeAsync(true);
         }

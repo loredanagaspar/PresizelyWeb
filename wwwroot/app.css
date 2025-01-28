@@ -20,101 +20,74 @@ a, .btn-link {
         text-decoration: underline;
     }
 
-/* Set the background color for the entire nav menu */
+/* Navigation Bar */
 .nav-scrollable {
-    background-color: olivegreen; /* Apply olive green background */
-    width: 100%; /* Ensure full width */
-    height: 100vh; /* Make it cover the full viewport height */
+    background-color: olivegreen;
+    width: 100%;
+    height: 100vh;
+    color: white;
 }
 
-/* Center the logo and adjust it to fit the nav bar width */
-.navbar-brand img {
-    display: block;
-    margin-top: 0; /* Center the logo horizontally */
-    max-width: 100%; /* Adjust the logo width to fit within the nav menu */
-    height: auto; /* Maintain aspect ratio */
-}
-
-.nav-scrollable .nav-link {
-    color: white; /* Default text color */
-}
-
-    .nav-scrollable .nav-link:hover {
-        color: #ddd; /* Softer hover color */
+    .nav-scrollable .nav-link {
+        color: white;
+        transition: color 0.3s;
     }
 
-/* Ensure text and icons are visible on olivegreen */
-.nav-link, .navbar-brand {
-    color: white; /* Text color for readability */
-}
- .nav-link:hover, .navbar-brand:hover {
-        color: #ddd; /* Hover text color for better UX */
- }
+        .nav-scrollable .nav-link:hover {
+            color: #ddd;
+        }
 
 .nav-link.active {
-        font-weight: bold;
-        color: #0056b3; /* Highlight color */
-        text-decoration: underline;
-    }
-
-    /* Align icons with text in nav links */
-    .nav-link .bi {
-        font-size: 1.2rem; /* Adjust icon size */
-        vertical-align: middle; /* Align vertically with text */
-        margin-right: 8px; /* Add spacing between icon and text */
-    }
-
-/* Ensure text in nav links is aligned */
-.nav-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0.5rem; /* Adjust padding */
-    text-align: left; /* Align text */
-    white-space: nowrap; /* Prevent text wrapping */
-    color: #333;
-    text-decoration: none;
+    font-weight: bold;
+    color: #0056b3;
+    text-decoration: underline;
 }
 
-/* Prevent flex issues in smaller viewports */
-.nav-item {
-    display: inline-flex;
-    align-items: center;
+.navbar-brand img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Buttons */
+button, .btn {
+    border-radius: 10px;
+    transition: all 0.3s ease;
 }
 
 .btn-primary {
-    color: #fff;
+    color: white;
     background-color: #1b6ec2;
     border-color: #1861ac;
-    transition: all 0.3s ease;
 }
 
     .btn-primary:hover {
         background-color: #145a92;
-        border-color: #124e80;
     }
 
 .btn-outline-success {
     color: #28a745;
     border: 1px solid #28a745;
-    transition: all 0.3s ease;
 }
 
     .btn-outline-success:hover {
         background-color: #28a745;
-        color: #fff;
+        color: white;
     }
 
 /* Hero Section */
 .hero-section {
-    background-color: rgba(0, 0, 0, 0.4); /* Dark overlay */
+    background-color: rgba(0, 0, 0, 0.4);
     color: white;
     text-align: center;
     padding: 3em 2em;
+    min-height: 300px; /* Fallback for smaller screens */
     height: 50vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
     .hero-section h1, .hero-section p {
@@ -128,11 +101,28 @@ a, .btn-link {
         border-radius: 5px;
         text-decoration: none;
         font-size: 1.2em;
+        transition: background-color 0.3s;
     }
 
         .hero-section .btn:hover {
             background-color: #2C6E34;
         }
+
+/* Responsive Adjustments for Hero Section */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2em 1em;
+        height: auto;
+    }
+
+        .hero-section h1 {
+            font-size: 1.8em;
+        }
+
+        .hero-section p {
+            font-size: 1em;
+        }
+}
 
 /* Environmental Message */
 .environmental-message {
@@ -190,11 +180,7 @@ a, .btn-link {
     margin-bottom: 1em;
 }
 
-
-
-
-
-/* Background */
+/* Home Page Background */
 .home-page {
     background-color: #A9BA9D;
     background-size: cover;
@@ -202,38 +188,81 @@ a, .btn-link {
     background-attachment: fixed;
     min-height: 100vh;
 }
-
-/* SizeCalculator */
+/ /* Size Calculator Container */
 .size-calculator-container {
     background-color: #f8f9fa;
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
-    width: 100%;
 }
 
-.card {
+/* Main Card */
+.size-calculator-card {
     border: none;
     border-radius: 15px;
+    max-width: 650px; 
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    background-color: white;
 }
 
-.card-header {
-    font-size: 1.5rem;
-    font-weight: bold;
+/* Two-column Layout Inside the Card */
+.size-calculator-card-body {
+    display: flex;
+    flex-direction: row;
+    gap: 30px; 
 }
 
-.form-control {
-    border-radius: 10px;
+/* Left Section: Calculator and Size Guide */
+.size-calculator-content {
+    flex: 2; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
 }
 
-button {
-    border-radius: 10px;
-}
-/* Make the text smaller in the "How to measure" section */
-.measure-list {
-    font-size: 0.9rem; 
-    line-height: 1.5; 
+
+/* Size Guide Table */
+.size-guide-wrapper {
+    max-height: 250px; /* Limit the height */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
 }
 
-    .measure-list .fst-italic {
-        font-size: 0.85rem; 
+.size-guide-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+    .size-guide-table th,
+    .size-guide-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        font-size: 0.9rem;
     }
+
+    .size-guide-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .size-calculator-card-body {
+        flex-direction: column; /* Stack vertically on smaller screens */
+    }
+
+    .size-calculator-image-text {
+        margin-top: 20px; /* Add spacing between sections */
+    }
+
+    .size-calculator-content {
+        gap: 15px; /* Reduce spacing on smaller screens */
+    }
+}

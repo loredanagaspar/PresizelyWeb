@@ -2,30 +2,40 @@
 
 namespace PresizelyWeb.Data
 {
+    /// <summary>
+    /// Represents the details of a specific order, including product information, quantity, and pricing.
+    /// </summary>
     public class OrderDetail
-    {
-        public int Id { get; set; }
-        public int OrderHeaderId { get; set; }
-        public OrderHeader OrderHeader { get; set; }
+        {
+            // Unique identifier for the order detail.
+            public int Id { get; set; }
 
-        public int ProductId {  get; set; }
-        public Product Product { get; set; }
+            // Identifier for the associated order header, linking this detail to the main order.
+            public int OrderHeaderId { get; set; }
 
-        [Required]
-        public int Count { get; set; }
+            // The associated order header, providing access to the main order.
+            public OrderHeader OrderHeader { get; set; }
 
+            // Identifier of the product associated with this order detail.
+            public int ProductId { get; set; }
 
-        [Required]
-        public double Price { get; set; }
+            // The associated product details, providing access to product-related information.
+            public Product Product { get; set; }
 
+            // Quantity of the product ordered. Required field.
+            [Required]
+            public int Count { get; set; }
 
-        [Required]
-        public string ProductName{ get; set; }
+            // Price of the product at the time of the order. Required field.
+            [Required]
+            public double Price { get; set; }
 
-        [Required]
-        public string Size{ get; set; }
+            // Name of the product associated with this order detail. Required field.
+            [Required]
+            public string ProductName { get; set; }
 
-
-
-    }
+            // Size of the product ordered. Required field.
+            [Required]
+            public string Size { get; set; }
+        }
 }

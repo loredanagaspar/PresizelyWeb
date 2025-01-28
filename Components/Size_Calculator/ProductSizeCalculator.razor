@@ -1,62 +1,90 @@
 ﻿@page "/size-calculator/{productId:int}"
 @using PresizelyWeb.Data
+@using System.Text.Json
 @inject IProductRepository ProductRepository
 @inject NavigationManager NavigationManager
 
-<div class="size-calculator-container d-flex justify-content-center align-items-center vh-100">
-    <div class="card shadow-lg" style="width: 400px; border-radius: 15px;">
-        <div class="card-header bg-primary text-white text-center" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+<div class="size-calculator-container">
+    <div class="size-calculator-card">
+        <div class="card-header bg-primary text-white text-center">
             <h4>Size Calculator</h4>
         </div>
-        <div class="card-body">
-            @if (_isLoading)
-            {
-                <div class="text-center">
-                    <p>Loading product data...</p>
-                </div>
-            }
-            else if (!string.IsNullOrEmpty(_errorMessage))
-            {
-                <div class="alert alert-danger text-center">
-                    <p>@_errorMessage</p>
-                    <button class="btn btn-secondary" @onclick="NavigateBack">Back to Products</button>
-                </div>
-            }
-            else
-            {
-                @if (_isProcessing)
-                {
-                    <div class="text-center">
-                        <p>Calculating size, please wait...</p>
-                    </div>
-                }
-                else
-                {
-                    @if (_isTop)
+        <div class="size-calculator-card-body">
+            <!-- Left Section: Calculator Form and Size Guide -->
+            <div class="size-calculator-content">
+                <!-- Calculator Form -->
+                <div>
+                    @if (_isProcessing)
                     {
-                        <TopSizeForm SizeCalculator="_sizeCalculator" OnSubmit="CalculateSize" />
+                        <div class="text-center">
+                            <p>Calculating size, please wait...</p>
+                        </div>
                     }
                     else
                     {
-                        <BottomSizeForm SizeCalculator="_sizeCalculator" OnSubmit="CalculateSize" />
-                    }
-
-                }
-
-                @if (!string.IsNullOrEmpty(_sizeCalculator.RecommendedSize))
-                {
-                    <div class="alert alert-success text-center mt-3">
-                        <strong>Recommended Size:</strong> @_sizeCalculator.RecommendedSize
-                        @if (!string.IsNullOrEmpty(_sizeCalculator.RecommendationMessage))
+                        @if (_isTop)
                         {
-                            <p>@_sizeCalculator.RecommendationMessage</p>
+                            <TopSizeForm SizeCalculator="_sizeCalculator" OnSubmit="CalculateSize" />
                         }
+                        else
+                        {
+                            <BottomSizeForm SizeCalculator="_sizeCalculator" OnSubmit="CalculateSize" />
+                        }
+
+                        @if (!string.IsNullOrEmpty(_sizeCalculator.RecommendedSize))
+                        {
+                            <div class="alert alert-success text-center mt-3">
+                                <strong>Recommended Size:</strong> @_sizeCalculator.RecommendedSize
+                                @if (!string.IsNullOrEmpty(_sizeCalculator.RecommendationMessage))
+                                {
+                                    <p>@_sizeCalculator.RecommendationMessage</p>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+
+                <!-- Size Guide Section -->
+                <div class="size-guide-section">
+                    <h5 class="text-center mb-3">Product Measurements</h5>
+                    <div class="size-guide-wrapper">
+                        @if (_sizeChartHeaders.Count > 0 && _sizeChart.Count > 0)
+                        {
+                            <table class="table table-bordered mt-4">
+                                <thead class="table-light" style="font-size: 0.8rem;">
+                                    <tr>
+                                        @foreach (var header in _sizeChartHeaders)
+                                        {
+                                            <th>@header</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody style="font-size: 0.8rem;">
+                                    @foreach (var row in _sizeChart)
+                                    {
+                                        <tr>
+                                            @foreach (var cell in row)
+                                            {
+                                                <td>@cell</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-center text-muted">No size guide available for this product.</p>
+                        }
+
                     </div>
-                }
-            }
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
+
 
 @code {
     private SizeCalculator _sizeCalculator = new SizeCalculator();
@@ -64,26 +92,43 @@
     private bool _isLoading = true;
     private string _errorMessage = string.Empty;
     private bool _isTop = true;
+    private Product _product;
+    private List<string> _sizeChartHeaders = new List<string>();
+    private List<List<string>> _sizeChart = new List<List<string>>();
 
     [Parameter]
     public int ProductId { get; set; }
+    // Mapping JSON keys to user-friendly names
+    private readonly Dictionary<string, string> _headerMappings = new Dictionary<string, string>
+    {
+        { "ChestMin", "Chest Min (cm)" },
+        { "ChestMax", "Chest Max (cm)" },
+        { "WaistMin", "Waist Min (cm)" },
+        { "WaistMax", "Waist Max (cm)" },
+        { "SleeveLengthMin", "Sleeve Length Min (cm)" },
+        { "SleeveLengthMax", "Sleeve Length Max (cm)" },
+        { "HipsMin", "Hips Min (cm)" },
+        { "HipsMax", "Hips Max (cm)" },
+        { "InseamMin", "Inside Leg Min (cm)" },
+        { "InseamMax", "Inside Leg (cm)" }
+    };
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var product = await ProductRepository.GetAsync(ProductId);
+            _product = await ProductRepository.GetAsync(ProductId);
 
-            if (product == null)
+            if (_product == null)
             {
                 _errorMessage = "Product not found.";
+                return;
             }
-            else
-            {
-                _isTop = product.IsTop; // Determine if this is a top or bottom
-                Console.WriteLine($"Product Loaded: {product.Name}, IsTop: {_isTop}");
-                _sizeCalculator.RecommendedSize = string.Empty;
-            }
+
+            _isTop = _product.IsTop;
+            _sizeCalculator.RecommendedSize = string.Empty;
+
+            ParseSizeChart(_product.SizeChartJson);
         }
         catch (Exception ex)
         {
@@ -94,6 +139,50 @@
             _isLoading = false;
         }
     }
+
+    private void ParseSizeChart(string sizeChartJson)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(sizeChartJson))
+            {
+                _sizeChart = new List<List<string>>();
+                return;
+            }
+
+            var sizeChart = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(sizeChartJson);
+
+            if (sizeChart != null)
+            {
+                // Headers for the table
+                _sizeChartHeaders = new List<string> { "Size" };
+                _sizeChartHeaders.AddRange(
+                    sizeChart.First().Value.Keys.Select(key => _headerMappings.ContainsKey(key) ? _headerMappings[key] : key)
+                );
+
+                // Table rows
+                _sizeChart = sizeChart.Select(size =>
+                    new List<string> { size.Key }
+                    .Concat(size.Value.Values.Select(v => v.ToString())).ToList()
+                ).ToList();
+            }
+        }
+        catch
+        {
+            _sizeChart = new List<List<string>>();
+        }
+    }
+
+    private string GetMeasurementImage()
+    {
+        if (_product == null)
+        {
+            return string.Empty; // Return an empty string if the product is not loaded
+        }
+
+        return _product.IsTop ? "/lib/images/HowToMeasureTops.png" : "/lib/images/HowToMeasureBottoms.png";
+    }
+
 
     private async Task CalculateSize()
     {
@@ -108,13 +197,7 @@
                 return;
             }
 
-            Console.WriteLine($"Calculating size for: {product.Name}");
-            Console.WriteLine($"IsTop: {_isTop}, SizeChartJson: {product.SizeChartJson}");
-
             _sizeCalculator.RecommendedSize = _sizeCalculator.MatchSize(product.SizeChartJson, _isTop);
-
-            Console.WriteLine($"Recommended Size: {_sizeCalculator.RecommendedSize}");
-            Console.WriteLine($"Recommendation Message: {_sizeCalculator.RecommendationMessage}");
         }
         catch (Exception ex)
         {
@@ -126,8 +209,6 @@
             StateHasChanged();
         }
     }
-
-
 
     private void NavigateBack()
     {
