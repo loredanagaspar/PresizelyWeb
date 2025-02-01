@@ -10,9 +10,7 @@
             <h4>Size Calculator</h4>
         </div>
         <div class="size-calculator-card-body">
-            <!-- Left Section: Calculator Form and Size Guide -->
             <div class="size-calculator-content">
-                <!-- Calculator Form -->
                 <div>
                     @if (_isProcessing)
                     {
@@ -22,7 +20,7 @@
                     }
                     else
                     {
-                        @if (_isTop)
+                        @if (_sizeCalculator.IsTop)
                         {
                             <TopSizeForm SizeCalculator="_sizeCalculator" OnSubmit="CalculateSize" />
                         }
@@ -44,7 +42,6 @@
                     }
                 </div>
 
-                <!-- Size Guide Section -->
                 <div class="size-guide-section">
                     <h5 class="text-center mb-3">Product Measurements</h5>
                     <div class="size-guide-wrapper">
@@ -76,29 +73,25 @@
                         {
                             <p class="text-center text-muted">No size guide available for this product.</p>
                         }
-
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
-
 
 @code {
     private SizeCalculator _sizeCalculator = new SizeCalculator();
     private bool _isProcessing = false;
     private bool _isLoading = true;
     private string _errorMessage = string.Empty;
-    private bool _isTop = true;
     private Product _product;
     private List<string> _sizeChartHeaders = new List<string>();
     private List<List<string>> _sizeChart = new List<List<string>>();
 
     [Parameter]
     public int ProductId { get; set; }
-    // Mapping JSON keys to user-friendly names
+
     private readonly Dictionary<string, string> _headerMappings = new Dictionary<string, string>
     {
         { "ChestMin", "Chest Min (cm)" },
@@ -113,7 +106,17 @@
         { "InseamMax", "Inside Leg (cm)" }
     };
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
+    {
+        // Initialise the SizeCalculator model with default values
+        _sizeCalculator = new SizeCalculator
+            {
+                IsTop = false,
+                FitPreference = "Regular", // Default value
+            };
+    }
+
+    protected override async Task OnParametersSetAsync()
     {
         try
         {
@@ -124,11 +127,15 @@
                 _errorMessage = "Product not found.";
                 return;
             }
+            _sizeCalculator = new SizeCalculator
+                {
+                    IsTop = _product.IsTop
+                };
 
-            _isTop = _product.IsTop;
             _sizeCalculator.RecommendedSize = string.Empty;
-
             ParseSizeChart(_product.SizeChartJson);
+
+            StateHasChanged(); 
         }
         catch (Exception ex)
         {
@@ -139,6 +146,7 @@
             _isLoading = false;
         }
     }
+
 
     private void ParseSizeChart(string sizeChartJson)
     {
@@ -154,13 +162,11 @@
 
             if (sizeChart != null)
             {
-                // Headers for the table
                 _sizeChartHeaders = new List<string> { "Size" };
                 _sizeChartHeaders.AddRange(
                     sizeChart.First().Value.Keys.Select(key => _headerMappings.ContainsKey(key) ? _headerMappings[key] : key)
                 );
 
-                // Table rows
                 _sizeChart = sizeChart.Select(size =>
                     new List<string> { size.Key }
                     .Concat(size.Value.Values.Select(v => v.ToString())).ToList()
@@ -173,19 +179,11 @@
         }
     }
 
-    private string GetMeasurementImage()
-    {
-        if (_product == null)
-        {
-            return string.Empty; // Return an empty string if the product is not loaded
-        }
-
-        return _product.IsTop ? "/lib/images/HowToMeasureTops.png" : "/lib/images/HowToMeasureBottoms.png";
-    }
-
-
     private async Task CalculateSize()
     {
+
+        Console.WriteLine($"[Parent Component] FitPreference: {_sizeCalculator.FitPreference}");
+        Console.WriteLine($"[Parent Component] Waist: {_sizeCalculator.BottomsWaist}, Hips: {_sizeCalculator.Hips}, Inseam: {_sizeCalculator.Inseam}");
         try
         {
             _isProcessing = true;
@@ -197,7 +195,7 @@
                 return;
             }
 
-            _sizeCalculator.RecommendedSize = _sizeCalculator.MatchSize(product.SizeChartJson, _isTop);
+            _sizeCalculator.RecommendedSize = _sizeCalculator.MatchSize(product.SizeChartJson);
         }
         catch (Exception ex)
         {

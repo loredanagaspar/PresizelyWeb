@@ -3,39 +3,56 @@
 <EditForm Model="@SizeCalculator" OnValidSubmit="@OnSubmit">
     <div class="d-flex justify-content-between align-items-start">
         <!-- Size Calculator -->
-        <div class="calculator-container ">
-     
+        <div class="calculator-container">
+
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" />
 
+            <!-- Waist -->
             <div class="mb-3">
-                <label for="Height" class="form-label">Height (cm):</label>
-                <InputNumber id="Height" @bind-Value="SizeCalculator.Height" class="form-control" />
-                <ValidationMessage For="@(() => SizeCalculator.Height)" />
+                <label for="BottomsWaist" class="form-label">Waist (cm):</label>
+                <InputNumber id="BottomsWaist" @bind-Value="SizeCalculator.BottomsWaist" class="form-control" />
+                <ValidationMessage For="@(() => SizeCalculator.BottomsWaist)" />
             </div>
 
-            <div class="mb-3">
-                <label for="Weight" class="form-label">Weight (kg):</label>
-                <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight" class="form-control" />
-                <ValidationMessage For="@(() => SizeCalculator.Weight)" />
-            </div>
-
-            <div class="mb-3">
-                <label for="Waist" class="form-label">Waist (cm):</label>
-                <InputNumber id="Waist" @bind-Value="SizeCalculator.Waist" class="form-control" />
-                <ValidationMessage For="@(() => SizeCalculator.Waist)" />
-            </div>
-
+            <!-- Hips -->
             <div class="mb-3">
                 <label for="Hips" class="form-label">Hips (cm):</label>
                 <InputNumber id="Hips" @bind-Value="SizeCalculator.Hips" class="form-control" />
                 <ValidationMessage For="@(() => SizeCalculator.Hips)" />
             </div>
 
+            <!-- Inseam -->
             <div class="mb-3">
-                <label for="Inseam" class="form-label">Inside leg(cm):</label>
+                <label for="Inseam" class="form-label">Inside leg (cm):</label>
                 <InputNumber id="Inseam" @bind-Value="SizeCalculator.Inseam" class="form-control" />
                 <ValidationMessage For="@(() => SizeCalculator.Inseam)" />
+            </div>
+
+            <!-- Height (New) -->
+            <div class="mb-3">
+                <label for="Height" class="form-label">Height (cm):</label>
+                <InputNumber id="Height" @bind-Value="SizeCalculator.Height" class="form-control" />
+                <ValidationMessage For="@(() => SizeCalculator.Height)" />
+            </div>
+
+            <!-- Weight (New) -->
+            <div class="mb-3">
+                <label for="Weight" class="form-label">Weight (kg):</label>
+                <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight" class="form-control" />
+                <ValidationMessage For="@(() => SizeCalculator.Weight)" />
+            </div>
+
+            <!-- Fit Preference (New) -->
+            <div class="mb-3">
+                <label for="FitPreference" class="form-label">Fit Preference:</label>
+                <InputSelect id="FitPreference" @bind-Value="SizeCalculator.FitPreference" class="form-control">
+                    <option value="">-- Select Fit Preference --</option>
+                    <option value="Tight">Tight</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Loose">Loose</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => SizeCalculator.FitPreference)" />
             </div>
 
             <div class="text-center d-flex justify-content-center gap-3">
@@ -43,18 +60,17 @@
                 <button type="button" class="btn btn-secondary px-4" @onclick="NavigateBack">Back</button>
             </div>
         </div>
-
     </div>
-   
-
 </EditForm>
 
 @code {
+    // The SizeCalculator model
     [Parameter]
-    public SizeCalculator SizeCalculator { get; set; }
+    public SizeCalculator SizeCalculator { get; set; } = new SizeCalculator { FitPreference = "Regular" };
 
     [Parameter]
     public EventCallback OnSubmit { get; set; }
+
 
     private void NavigateBack()
     {

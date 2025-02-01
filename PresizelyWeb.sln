@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresizelyWeb", "PresizelyWeb.csproj", "{EBF50153-B47C-4E21-AA1B-496984447BED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreSIZElyTests", "..\PreSIZElyTests\PreSIZElyTests.csproj", "{DA023A69-3EB4-4BA0-B945-F41794149E47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EBF50153-B47C-4E21-AA1B-496984447BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBF50153-B47C-4E21-AA1B-496984447BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBF50153-B47C-4E21-AA1B-496984447BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA023A69-3EB4-4BA0-B945-F41794149E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA023A69-3EB4-4BA0-B945-F41794149E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA023A69-3EB4-4BA0-B945-F41794149E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA023A69-3EB4-4BA0-B945-F41794149E47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

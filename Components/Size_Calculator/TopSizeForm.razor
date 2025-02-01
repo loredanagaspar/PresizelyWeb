@@ -2,61 +2,74 @@
 
 <!-- Form for Size Calculator input -->
 <EditForm Model="@SizeCalculator" OnValidSubmit="@OnSubmit">
-    <DataAnnotationsValidator /> <!-- Enables validation using data annotations -->
-    <ValidationSummary class="text-danger" /> <!-- Displays validation errors -->
-    <!-- Input for Height -->
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <!-- Chest -->
     <div class="mb-3">
-        <label for="Height" class="form-label">Height (cm):</label>
-        <InputNumber id="Height" @bind-Value="SizeCalculator.Height" class="form-control" />
-        <ValidationMessage For="@(() => SizeCalculator.Height)" /> <!-- Error message for Height -->
+        <label for="Chest" class="form-label">Chest (cm):</label>
+        <InputNumber id="Chest" @bind-Value="SizeCalculator.Chest" class="form-control" />
+        <ValidationMessage For="@(() => SizeCalculator.Chest)" />
     </div>
 
-    <!-- Input for Weight -->
-    <div class="mb-3">
-        <label for="Weight" class="form-label">Weight (kg):</label>
-        <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight" class="form-control" />
-        <ValidationMessage For="@(() => SizeCalculator.Weight)" /> <!-- Error message for Weight -->
-    </div>
-
-    <!-- Input for Chest -->
-    <div class="mb-3">
-        <label for="Bust" class="form-label">Chest (cm):</label>
-        <InputNumber id="Bust" @bind-Value="SizeCalculator.Bust" class="form-control" />
-        <ValidationMessage For="@(() => SizeCalculator.Bust)" /> <!-- Error message for Chest -->
-    </div>
-
-    <!-- Input for Waist -->
+    <!-- Waist -->
     <div class="mb-3">
         <label for="Waist" class="form-label">Waist (cm):</label>
         <InputNumber id="Waist" @bind-Value="SizeCalculator.Waist" class="form-control" />
-        <ValidationMessage For="@(() => SizeCalculator.Waist)" /> <!-- Error message for Waist -->
+        <ValidationMessage For="@(() => SizeCalculator.Waist)" />
     </div>
 
-    <!-- Input for Arm Length -->
+    <!-- Sleeve Length -->
     <div class="mb-3">
-        <label for="SleeveLength" class="form-label">Arm Length (cm):</label>
+        <label for="SleeveLength" class="form-label">Sleeve Length (cm):</label>
         <InputNumber id="SleeveLength" @bind-Value="SizeCalculator.SleeveLength" class="form-control" />
-        <ValidationMessage For="@(() => SizeCalculator.SleeveLength)" /> <!-- Error message for Arm Length -->
+        <ValidationMessage For="@(() => SizeCalculator.SleeveLength)" />
     </div>
 
-    <!-- Action buttons: Calculate and Back -->
+    <!-- Height (New) -->
+    <div class="mb-3">
+        <label for="Height" class="form-label">Height (cm):</label>
+        <InputNumber id="Height" @bind-Value="SizeCalculator.Height" class="form-control" />
+        <ValidationMessage For="@(() => SizeCalculator.Height)" />
+    </div>
+
+    <!-- Weight (New) -->
+    <div class="mb-3">
+        <label for="Weight" class="form-label">Weight (kg):</label>
+        <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight" class="form-control" />
+        <ValidationMessage For="@(() => SizeCalculator.Weight)" />
+    </div>
+
+    <!-- Fit Preference (New) -->
+    <div class="mb-3">
+        <label for="FitPreference" class="form-label">Fit Preference:</label>
+
+        <InputSelect id="FitPreference" @bind-Value="SizeCalculator.FitPreference" class="form-control">
+            <option value="">-- Select Fit Preference --</option>
+            <option value="Tight">Tight</option>
+            <option value="Regular">Regular</option>
+            <option value="Loose">Loose</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => SizeCalculator.FitPreference)" />
+    </div>
+
+    <!-- Action buttons -->
     <div class="text-center d-flex justify-content-center gap-3">
-        <button type="submit" class="btn btn-primary px-4">Calculate</button> <!-- Submit the form -->
-        <button type="button" class="btn btn-secondary px-4" @onclick="NavigateBack">Back</button> <!-- Navigate back -->
+        <button type="submit" class="btn btn-primary px-4">Calculate</button>
+        <button type="button" class="btn btn-secondary px-4" @onclick="NavigateBack">Back</button>
     </div>
 
 </EditForm>
 
 @code {
     [Parameter]
-    public SizeCalculator SizeCalculator { get; set; } // Bound SizeCalculator model
+    public SizeCalculator SizeCalculator { get; set; }
 
     [Parameter]
-    public EventCallback OnSubmit { get; set; } // Callback for form submission
+    public EventCallback OnSubmit { get; set; }
 
     private void NavigateBack()
     {
-        // Navigate to the previous page or a specific route
-        NavigationManager.NavigateTo("/products"); // Update the URL to your desired route
+        NavigationManager.NavigateTo("/products");
     }
 }
