@@ -80,24 +80,7 @@ PresizelyWeb/
 
 ## Sample Screenshots
 
-> Replace the following paths with real screenshots from your project
-
-| Home Page                                      | Product Detail + Size Chart                        |
-|------------------------------------------------|----------------------------------------------------|
-| ![Home](wwwroot\lib\screenshoots\homepage.png)| ![Product]((wwwroot\lib\screenshoots\garments.png)  |
-
-| Sign in                                        | Registration                                       |
-|----------------------------------|------------------------------------------------------------------|
-| ![Sign in]((wwwroot\lib\screenshoots\signin.png)| ![Register]((wwwroot\lib\screenshoots\register.png)|
-
-| Orders                                         | Calculator                                         |
-|----------------------------------|------------------------------------------------------------------|
-| ![Orders]((wwwroot\lib\screenshoots\orders.png)| ![Calculator]((wwwroot\lib\screenshoots\size_calculator.png)|
-
-| Payment                                         | Cart + Checkout                                   |
-|----------------------------------|------------------------------------------------------------------|
-| ![Payment]((wwwroot\lib\screenshoots\payment.png)|![Cart]((wwwroot\lib\screenshoots\cart.png)       |
-
+Screenshots available in wwwroot/lib/screenshots
 ---
 
 ## Test Stripe Key
