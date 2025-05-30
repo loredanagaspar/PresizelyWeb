@@ -1,0 +1,103 @@
+﻿@inject IJSRuntime _JS
+
+<EditForm Model="@SizeCalculator">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    @if (SizeCalculator.IsTop)
+    {
+        <!-- Top Size Inputs -->
+        <div class="mb-3">
+            <label for="Chest" class="form-label">Chest (cm):</label>
+            <InputNumber id="Chest" @bind-Value="SizeCalculator.Chest"
+                         class="form-control"
+                         @oninput="ValidateNumericInput" />
+            <ValidationMessage For="@(() => SizeCalculator.Chest)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Waist" class="form-label">Waist (cm):</label>
+            <InputNumber id="Waist" @bind-Value="SizeCalculator.Waist"
+                         class="form-control"
+                         @oninput="ValidateNumericInput" />
+            <ValidationMessage For="@(() => SizeCalculator.Waist)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="SleeveLength" class="form-label">Sleeve Length (cm):</label>
+            <InputNumber id="SleeveLength" @bind-Value="SizeCalculator.SleeveLength"
+                         class="form-control"
+                         @oninput="ValidateNumericInput" />
+            <ValidationMessage For="@(() => SizeCalculator.SleeveLength)" />
+        </div>
+    }
+    else
+    {
+        <!-- Bottom Size Inputs -->
+        <div class="mb-3">
+            <label for="BottomsWaist" class="form-label">Waist (cm):</label>
+            <InputNumber id="BottomsWaist" @bind-Value="SizeCalculator.BottomsWaist"
+                         class="form-control"
+                         @oninput="ValidateNumericInput" />
+            <ValidationMessage For="@(() => SizeCalculator.BottomsWaist)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Hips" class="form-label">Hips (cm):</label>
+            <InputNumber id="Hips" @bind-Value="SizeCalculator.Hips"
+                         class="form-control"
+                         @oninput="ValidateNumericInput" />
+            <ValidationMessage For="@(() => SizeCalculator.Hips)" />
+        </div>
+        <div class="mb-3">
+            <label for="Inseam" class="form-label">Inseam (cm):</label>
+            <InputNumber id="Inseam" @bind-Value="SizeCalculator.Inseam"
+                         class="form-control"
+            @oninput="ValidateNumericInput" />
+            <ValidationMessage For="@(() => SizeCalculator.Inseam)" />
+        </div>
+    }
+
+    <!-- Common Fields -->
+    <div class="mb-3">
+        <label for="Height" class="form-label">Height (cm):</label>
+        <InputNumber id="Height" @bind-Value="SizeCalculator.Height"
+                     class="form-control"
+        @oninput="ValidateNumericInput" />
+        <ValidationMessage For="@(() => SizeCalculator.Height)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Weight" class="form-label">Weight (kg):</label>
+        <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight"
+                     class="form-control"
+                     @oninput="ValidateNumericInput" />
+        <ValidationMessage For="@(() => SizeCalculator.Weight)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="FitPreference" class="form-label">Fit Preference:</label>
+        <InputSelect id="FitPreference" @bind-Value="SizeCalculator.FitPreference" class="form-control">
+            <option value="">-- Select Fit Preference --</option>
+            <option value="Tight">Tight</option>
+            <option value="Regular">Regular</option>
+            <option value="Loose">Loose</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => SizeCalculator.FitPreference)" />
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public SizeCalculator SizeCalculator { get; set; }
+
+    private async Task ValidateNumericInput(ChangeEventArgs e)
+    {
+        string inputValue = e.Value?.ToString();
+        if (!int.TryParse(inputValue, out _))
+        {
+            await _JS.InvokeVoidAsync("toastr.error", "❌ Invalid input! Please enter a number.");
+        }
+    }
+    
+
+}

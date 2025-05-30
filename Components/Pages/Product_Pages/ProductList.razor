@@ -78,6 +78,8 @@ else
     private bool IsProcessing { get; set; } = true;
     private IEnumerable<Product> Products { get; set; } = new List<Product>();
     private int DeleteProductID { get; set; } =0;
+    private bool ShowSizeCalculator = false;
+
 
 
 
@@ -127,5 +129,8 @@ else
         DeleteProductID = 0;
         IsProcessing = false;
     }
+ 
+   
+ 
 }
 

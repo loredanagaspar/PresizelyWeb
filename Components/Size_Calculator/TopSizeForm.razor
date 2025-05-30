@@ -1,4 +1,5 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime _JS
 
 <!-- Form for Size Calculator input -->
 <EditForm Model="@SizeCalculator" OnValidSubmit="@OnSubmit">
@@ -8,7 +9,7 @@
     <!-- Chest -->
     <div class="mb-3">
         <label for="Chest" class="form-label">Chest (cm):</label>
-        <InputNumber id="Chest" @bind-Value="SizeCalculator.Chest" class="form-control" />
+        <InputNumber id="Chest" @bind-Value="SizeCalculator.Chest" class="form-control" @oninput="ValidateNumericInput" />
         <ValidationMessage For="@(() => SizeCalculator.Chest)" />
     </div>
 
@@ -22,21 +23,21 @@
     <!-- Sleeve Length -->
     <div class="mb-3">
         <label for="SleeveLength" class="form-label">Sleeve Length (cm):</label>
-        <InputNumber id="SleeveLength" @bind-Value="SizeCalculator.SleeveLength" class="form-control" />
+        <InputNumber id="SleeveLength" @bind-Value="SizeCalculator.SleeveLength" class="form-control" @oninput="ValidateNumericInput" />
         <ValidationMessage For="@(() => SizeCalculator.SleeveLength)" />
     </div>
 
     <!-- Height (New) -->
     <div class="mb-3">
         <label for="Height" class="form-label">Height (cm):</label>
-        <InputNumber id="Height" @bind-Value="SizeCalculator.Height" class="form-control" />
+        <InputNumber id="Height" @bind-Value="SizeCalculator.Height" class="form-control" @oninput="ValidateNumericInput" />
         <ValidationMessage For="@(() => SizeCalculator.Height)" />
     </div>
 
     <!-- Weight (New) -->
     <div class="mb-3">
         <label for="Weight" class="form-label">Weight (kg):</label>
-        <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight" class="form-control" />
+        <InputNumber id="Weight" @bind-Value="SizeCalculator.Weight" class="form-control" @oninput="ValidateNumericInput" />
         <ValidationMessage For="@(() => SizeCalculator.Weight)" />
     </div>
 
@@ -67,6 +68,16 @@
 
     [Parameter]
     public EventCallback OnSubmit { get; set; }
+
+    private async Task ValidateNumericInput(ChangeEventArgs e)
+    {
+        string inputValue = e.Value?.ToString();
+
+        if (!int.TryParse(inputValue, out _))
+        {
+            await _JS.InvokeVoidAsync("toastr.error", "❌ Invalid input! Please enter a number.");
+        }
+    }
 
     private void NavigateBack()
     {

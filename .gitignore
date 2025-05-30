@@ -361,3 +361,21 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Blazor-specific static assets (regenerate at build)
+wwwroot/lib/
+wwwroot/js/
+wwwroot/css/
+
+# Size calculator data or temp files (if any)
+Components/Size_Calculator/*.tmp
+Components/Size_Calculator/*.cache
+
+# User secrets (optional, if used)
+secrets.json
+
+# VSCode or JetBrains Rider IDE configs (if used)
+.vscode/
+.idea/
+
+# Environment config
+testEnvironments.json

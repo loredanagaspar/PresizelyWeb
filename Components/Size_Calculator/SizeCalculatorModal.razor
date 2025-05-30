@@ -1,0 +1,222 @@
+﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime _JS
+@inject IProductRepository ProductRepository
+@using PresizelyWeb.Components
+@using PresizelyWeb.Data
+
+<div class="modal fade show d-block" tabindex="-1" role="dialog" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg rounded-lg shadow-lg" role="document" @onclick:stopPropagation="true" style="border: 2px solid #4CAF50;">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center" style="background-color: #E8F5E9; border-bottom: 1px solid #4CAF50;">
+                <h5 class="modal-title mx-auto text-success">🌿 Size Calculator</h5>
+                <button type="button" class="btn btn-outline-secondary btn-sm ms-auto" style="position: absolute; right: 10px; top: 10px;" title="Reset" @onclick="ResetCalculator">
+                    <i class="bi bi-arrow-clockwise" id="refreshIcon"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: #F1F8E9;">
+                <p class="text-muted text-center mb-3">
+                    Helping you find your perfect size sustainably.
+                </p>
+                <EditForm Model="SizeCalculator" OnValidSubmit="CalculateSize">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger mb-3" />
+
+                    <SizeCalculatorForm SizeCalculator="SizeCalculator" />
+
+                    <div class="text-center d-flex justify-content-center gap-3">
+                        <button type="submit" class="btn btn-primary px-4">Calculate</button>
+                        <button type="button" class="btn btn-secondary px-4" @onclick="CloseModal">Close</button>
+                    </div>
+                </EditForm>
+                <div class="mt-4">
+                    @if (!string.IsNullOrEmpty(_errorMessage))
+                    {
+                        <div class="alert alert-danger text-center">
+                            <strong>Error:</strong> @_errorMessage
+                        </div>
+                    }
+                    else if (SizeCalculator.RecommendedSize == "N/A")
+                    {
+                        <div class="alert alert-warning text-center mt-3">
+                            <strong>Warning:</strong> @SizeCalculator.RecommendationMessage
+                            <br />
+                            Please check your measurements and try again.
+                        </div>
+                    }
+                    else if (!string.IsNullOrEmpty(SizeCalculator.RecommendedSize))
+                    {
+                        <div class="alert alert-success text-center mt-3">
+                            <strong>Recommended Size:</strong> @SizeCalculator.RecommendedSize
+                            @if (!string.IsNullOrEmpty(SizeCalculator.RecommendationMessage))
+                            {
+                                <p>@SizeCalculator.RecommendationMessage</p>
+                            }
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter] public SizeCalculator SizeCalculator { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public int ProductId { get; set; }
+
+    private bool _isProcessing = false;
+    private bool _isLoading = true;
+    private string _errorMessage = string.Empty;
+    private Product _product;
+
+    protected override void OnInitialized()
+    {
+        if (SizeCalculator == null)
+        {
+            SizeCalculator = new SizeCalculator
+                {
+                    IsTop = false,
+                    FitPreference = "Regular"
+                };
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ProductId <= 0)
+        {
+            _errorMessage = "Invalid product ID.";
+            return;
+        }
+
+        try
+        {
+            _product = await ProductRepository.GetAsync(ProductId);
+
+            if (_product == null)
+            {
+                _errorMessage = "Product not found.";
+                return;
+            }
+
+            if (SizeCalculator == null)
+            {
+                SizeCalculator = new SizeCalculator
+                    {
+                        IsTop = _product.IsTop
+                    };
+            }
+
+            SizeCalculator.RecommendedSize = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An error occurred while loading the product: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task CloseModal()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+
+    private async Task CalculateSize()
+    {
+        Console.WriteLine("CalculateSize method invoked.");
+        _errorMessage = string.Empty; // Clear previous error message
+
+        try
+        {
+            _isProcessing = true;
+
+            if (ProductId <= 0)
+            {
+                _errorMessage = "Invalid product ID.";
+                return;
+            }
+
+            var product = await ProductRepository.GetAsync(ProductId);
+
+            if (product == null || string.IsNullOrEmpty(product.SizeChartJson))
+            {
+                _errorMessage = "Size chart not available for this product.";
+                return;
+            }
+
+            if (SizeCalculator == null)
+            {
+                _errorMessage = "Size calculator is not initialised.";
+                return;
+            }
+
+            string newSize = SizeCalculator.MatchSize(product.SizeChartJson);
+
+            if (string.IsNullOrEmpty(newSize) || newSize == "N/A")
+            {
+                _errorMessage = SizeCalculator.RecommendationMessage;
+            }
+            else
+            {
+                SizeCalculator.RecommendedSize = newSize;
+            }
+
+            Console.WriteLine($"Size calculated: {SizeCalculator.RecommendedSize}");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An error occurred during size calculation: {ex.Message}";
+        }
+        finally
+        {
+            _isProcessing = false;
+            StateHasChanged(); // Ensure UI updates dynamically
+        }
+    }
+
+
+    private async Task ResetCalculator()
+    {
+        Console.WriteLine("ResetCalculator invoked");
+
+        try
+        {
+            await _JS.InvokeVoidAsync("addRefreshAnimation", "refreshIcon");
+            Console.WriteLine("JavaScript addRefreshAnimation invoked");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error invoking addRefreshAnimation: {ex.Message}");
+        }
+
+        // Perform the reset logic
+        SizeCalculator = new SizeCalculator
+            {
+                IsTop = _product?.IsTop ?? false,
+                FitPreference = "Regular",
+                RecommendedSize = string.Empty
+            };
+
+        _errorMessage = string.Empty;
+        StateHasChanged();
+
+        try
+        {
+            await _JS.InvokeVoidAsync("removeRefreshAnimation", "refreshIcon");
+            Console.WriteLine("JavaScript removeRefreshAnimation invoked");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error invoking removeRefreshAnimation: {ex.Message}");
+        }
+    }
+
+   
+
+}
+

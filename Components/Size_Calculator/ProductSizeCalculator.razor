@@ -29,7 +29,15 @@
                             <BottomSizeForm SizeCalculator="_sizeCalculator" OnSubmit="CalculateSize" />
                         }
 
-                        @if (!string.IsNullOrEmpty(_sizeCalculator.RecommendedSize))
+                        @if (_sizeCalculator.RecommendedSize == "N/A")
+                        {
+                            <div class="alert alert-warning text-center mt-3">
+                                <strong>Warning:</strong> @_sizeCalculator.RecommendationMessage
+                                <br />
+                                Please check your measurements and try again.
+                            </div>
+                        }
+                        else if (!string.IsNullOrEmpty(_sizeCalculator.RecommendedSize))
                         {
                             <div class="alert alert-success text-center mt-3">
                                 <strong>Recommended Size:</strong> @_sizeCalculator.RecommendedSize
@@ -181,9 +189,6 @@
 
     private async Task CalculateSize()
     {
-
-        Console.WriteLine($"[Parent Component] FitPreference: {_sizeCalculator.FitPreference}");
-        Console.WriteLine($"[Parent Component] Waist: {_sizeCalculator.BottomsWaist}, Hips: {_sizeCalculator.Hips}, Inseam: {_sizeCalculator.Inseam}");
         try
         {
             _isProcessing = true;
@@ -194,7 +199,8 @@
                 _errorMessage = "Size chart not available for this product.";
                 return;
             }
-
+            _sizeCalculator.RecommendedSize = string.Empty;
+            _sizeCalculator.RecommendationMessage = string.Empty;
             _sizeCalculator.RecommendedSize = _sizeCalculator.MatchSize(product.SizeChartJson);
         }
         catch (Exception ex)

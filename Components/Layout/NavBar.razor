@@ -3,10 +3,10 @@
 @inject SharedStateService _sharedstateService
 @inject IShoppingCartRepository _cartRepository
 
-<nav class="navbar navbar-expand-md navbar-dark bg-success-subtle pb-4 pt-4">
+<nav class="navbar navbar-expand-md navbar-dark bg-success-subtle py-0">
 	<div class="container-fluid">
 		<a class="navbar-brand text-muted" href="">
-			<img src="/lib/images/PreZISEly Logo.png" alt="Logo" style="height: 100%; max-height: 50px;">
+			<img src="/lib/images/PreZISEly Logo.png" alt="Logo">
 		</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
 		aria-controls="navbarCollapse" aria-label="Toggle navigation">
@@ -20,13 +20,13 @@
 					</NavLink>
 				</li>
 				<li class="nav-item mx-2">
-					<NavLink class="nav-link text-muted" href="/cart">
+					<NavLink class="nav-link text-muted " href="/cart">
 						<span class="bi bi-cart3" aria-hidden="true"></span> Cart (@_sharedstateService.TotalCartCount)
 					</NavLink>
 				</li>
 				<li class="nav-item mx-2">
 					<NavLink class="nav-link text-muted" href="/order/list">
-						<span class="bi bi-card-list" aria-hidden="true"></span> Order List
+						<span class="bi bi-card-list" aria-hidden="true"></span> My Orders
 					</NavLink>
 				</li>
 			</ul>

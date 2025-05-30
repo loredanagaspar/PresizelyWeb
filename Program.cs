@@ -12,7 +12,18 @@ using PresizelyWeb.Services;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Stripe;
 
-var builder = WebApplication.CreateBuilder(args);
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    EnvironmentName = environment ?? "Production"
+});
+
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -103,4 +114,11 @@ app.MapRazorComponents<App>()
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate(); // Applies any pending migrations
+}
+
+app.UseDeveloperExceptionPage();
 app.Run();

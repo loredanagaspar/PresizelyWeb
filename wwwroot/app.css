@@ -21,11 +21,17 @@ a, .btn-link {
     }
 
 /* Navigation Bar */
+
+
 .nav-scrollable {
     background-color: olivegreen;
     width: 100%;
     height: 100vh;
     color: white;
+}
+.navbar-nav .nav-link {
+    font-size: 1.2rem; /* Adjust as needed */
+    font-weight: 500; /* Optional: Makes text slightly bolder */
 }
 
     .nav-scrollable .nav-link {
@@ -43,12 +49,26 @@ a, .btn-link {
     text-decoration: underline;
 }
 
-.navbar-brand img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
+.navbar {
+    min-height: 70px; /* Increase navbar height to allow a bigger logo */
+    padding: 0 1rem; /* Optional: Adjust horizontal padding */
 }
+
+.navbar-brand {
+    height: 70px; /* Match the navbar height */
+    display: flex;
+    align-items: center; /* Center the logo vertically */
+    margin: 0; /* Remove extra margins */
+}
+
+    .navbar-brand img {
+        max-height: 70px; /* Increase max height for a larger logo */
+        height: auto; /* Maintain aspect ratio */
+        width: auto; /* Scale width proportionally */
+        margin: 0; /* Remove image margins */
+    }
+
+
 
 /* Buttons */
 button, .btn {
@@ -188,42 +208,6 @@ button, .btn {
     background-attachment: fixed;
     min-height: 100vh;
 }
-/ /* Size Calculator Container */
-.size-calculator-container {
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-/* Main Card */
-.size-calculator-card {
-    border: none;
-    border-radius: 15px;
-    max-width: 650px; 
-    width: 100%;
-    padding: 20px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    background-color: white;
-}
-
-/* Two-column Layout Inside the Card */
-.size-calculator-card-body {
-    display: flex;
-    flex-direction: row;
-    gap: 30px; 
-}
-
-/* Left Section: Calculator and Size Guide */
-.size-calculator-content {
-    flex: 2; 
-    display: flex;
-    flex-direction: column;
-    gap: 20px; 
-}
-
 
 /* Size Guide Table */
 .size-guide-wrapper {
@@ -252,17 +236,93 @@ button, .btn {
         font-weight: bold;
     }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 95%;
+        margin: 20px auto;
+    }
+
+    .modal-content {
+        padding: 10px;
+    }
+
+    .form-control {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+
+    .modal-title {
+        font-size: 1.2rem;
+    }
+}
+
+/* Refresh Button Size Calculator*/
+#refreshIcon {
+    font-size: 1.25rem; 
+}
+
+.rotate-icon {
+    animation: rotate 0.5s linear;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Highlight fields with extreme measurements*/
+
+.input-error {
+    border: 2px solid red !important;
+    background-color: #ffe5e5;
+    transition: all 0.3s ease-in-out;
+}
+
+    .input-error:focus {
+        outline: none;
+        box-shadow: 0 0 5px red;
+    }
+
+
+/* Centralised Media Queries */
+@media (max-width: 1024px) {
+    /* Tablet adjustments */
+    .nav-scrollable {
+        width: 50%; /* Collapse navigation for tablets */
+    }
+
+    .featured-products {
+        padding: 1.5em;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile adjustments */
+    .hero-section {
+        padding: 1em;
+        height: auto;
+    }
+
     .size-calculator-card-body {
-        flex-direction: column; /* Stack vertically on smaller screens */
+        flex-direction: column; /* Stack layout */
     }
 
-    .size-calculator-image-text {
-        margin-top: 20px; /* Add spacing between sections */
+    .modal-dialog {
+        max-width: 90%; /* Fit modal to smaller screens */
     }
 
-    .size-calculator-content {
-        gap: 15px; /* Reduce spacing on smaller screens */
+    button, .btn {
+        font-size: 0.8rem;
+        padding: 6px 10px;
     }
 }

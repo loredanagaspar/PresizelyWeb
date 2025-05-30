@@ -49,11 +49,11 @@
                 </div>
 
                 <div class="mt-4">
-                    <a class="btn btn-info me-2" href="/size-calculator/@Product.Id">
+                    <button class="btn btn-info" @onclick="ShowModal">
                         <i class="bi bi-calculator"></i> Size Calculator
-                    </a>
+                    </button>
                     <a class="btn btn-secondary" href="/size-guide/@Product.Id">
-                        <i class="bi bi-table"></i> Size Guide
+                        <i class="bi bi-table"></i> Poduct Measurements
                     </a>
                 </div>
 
@@ -65,6 +65,16 @@
     }
 </div>
 
+@if (_showModal && Product?.Id != null)
+{
+   <PresizelyWeb.Components.Size_Calculator.SizeCalculatorModal 
+    ProductId="@Product.Id"
+    SizeCalculator="_sizeCalculator"
+    OnSubmit="HandleSizeCalculation"
+    OnClose="CloseModal" />
+}
+
+
 @code {
     [Parameter]
     public int Id { get; set; }
@@ -74,10 +84,16 @@
     private string ErrorMessage;
     private string SelectedSize;
 
+    private bool _showModal = false; // Tracks modal visibility
+    private SizeCalculator _sizeCalculator = new SizeCalculator();
+    private string _calculatedSize;
+
     protected override async Task OnInitializedAsync()
     {
+        
         try
         {
+            Console.WriteLine($"ProductId: {Id}");
             Product = await ProductRepository.GetAsync(Id);
             if (Product == null)
             {
@@ -94,7 +110,44 @@
         }
     }
 
-   
+    private void ShowModal()
+    { 
+        if (Product == null)
+        {
+           
+            return;
+        }
+        _sizeCalculator = new SizeCalculator
+            {
+                IsTop = Product.IsTop,
+                FitPreference = "Regular"
+            };
+
+        _showModal = true; // Set modal visibility
+       
+    }
+
+
+    private void CloseModal()
+    {
+        _showModal = false; // Only close the modal when this method is called
+        StateHasChanged();
+    }
+
+    private async Task HandleSizeCalculation()
+    {
+        Console.WriteLine("HandleSizeCalculation invoked.");
+        // Process the size calculation result
+        if (!string.IsNullOrEmpty(_sizeCalculator.RecommendedSize))
+        {
+            Console.WriteLine($"Recommended size: {_sizeCalculator.RecommendedSize}");
+           
+        }
+        else
+        {
+            Console.WriteLine("No recommended size found. User can retry.");
+        }
+    }
 
     private async Task AddOrderItem(Product product, string selectedSize)
     {
@@ -137,4 +190,5 @@
     {
         NavigationManager.NavigateTo("/products");
     }
+    
 }

@@ -42,9 +42,9 @@
 
                 <!-- Search Box -->
                 <div style="max-width: 300px;" class="d-flex align-items-center">
-                    <input type="text" class="form-control rounded-pill me-2" 
-                    placeholder="Search products..." 
-                    @oninput="e => FilterProductByName(e.Value.ToString())" />
+                    <input type="text" class="form-control rounded-pill me-2"
+                           placeholder="Search products..."
+                           @oninput="e => FilterProductByName(e.Value.ToString())" />
                     <i class="bi bi-search text-secondary"></i>
                 </div>
             </div>
@@ -76,42 +76,8 @@
                                 <img class="card-img-top img-thumbnail img-rounded w-50 mt-2" src="images/default.png" style="">
                             }
                         </div>
-                        <!-- Description -->
-                        <p class="card-text mt-2">@((MarkupString)prod.Description)</p>
 
-                        <!-- Dropdown, Size Guide, and Size Calculator -->
-                        <div class="d-flex flex-column justify-content-start align-items-start gap-3">
-                            <!-- Size Dropdown -->
-                            <div class="d-flex align-items-center">
-                                <label for="sizeDropdown-@prod.Id" class="form-label mb-0">Available Sizes:</label>
-                                <select id="sizeDropdown-@prod.Id" class="form-select w-auto ms-2" @bind="selectedSize">
-                                    <option value="" disabled selected>Select a size</option> <!-- Placeholder option -->
-                                    @foreach (var size in prod.Size.Split(','))
-                                    {
-                                        <option value="@size">@size</option>
-                                    }
-                                </select>
-                            </div>
-
-                            <!-- Size Guide and Size Calculator Links -->
-                            <div class="d-flex gap-3">
-                                <a class="btn btn-secondary" href="/size-guide/@prod.Id">
-                                    <i class="bi bi-table"></i> Product Measurements
-                                </a>
-                                <a class="btn btn-info" href="/size-calculator/@prod.Id">
-                                    <i class="bi bi-calculator"></i> Size Calculator
-                                </a>
-                            </div>
-                        </div>
-
-                        
-
-                        <!-- Add to Cart Button -->
-                        <h4 class="text-center mt-3">
-                            <button class="btn btn-success text-right px-5" @onclick="()=>AddOrderItem(prod, selectedSize)">
-                                <i class="bi bi-cart3"></i> Add to cart
-                            </button>
-                        </h4>
+                        <p class="card-text mt-2">@((MarkupString)prod.Name) - @((MarkupString)prod.Description)</p>
 
                         <a href="/products/@prod.Id" class="btn btn-outline-success">View Details</a>
                     </div>
@@ -152,7 +118,7 @@
     private void FilterProducts(int categoryId)
     {
         _selectedCategoryId = categoryId; // Update the selected category ID
-        if (categoryId==0)
+        if (categoryId == 0)
         {
             // Show all products
             FilteredProducts = string.IsNullOrWhiteSpace(_searchText)
@@ -171,7 +137,7 @@
 
     private void FilterProductByName(string newValueOfSearchText)
     {
-        _searchText = newValueOfSearchText; // Update search text
+        _searchText = newValueOfSearchText; 
 
         if (string.IsNullOrWhiteSpace(newValueOfSearchText))
         {
@@ -230,5 +196,6 @@
         }
     }
 
- 
+
 }
+
